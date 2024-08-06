@@ -6,7 +6,6 @@ import { useMemo } from "react";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
 interface FormData {
@@ -29,7 +28,6 @@ export default function Login() {
   }, [size]);
 
   const router = useRouter();
-  const session = useSession();
 
   const {
     register,

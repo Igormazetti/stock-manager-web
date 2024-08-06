@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Bag, CaretLeft, CaretRight, Money, Package, SignOut, Users } from "phosphor-react";
-import { MoneyWavy } from "@phosphor-icons/react";
 
 export default function Menu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +10,7 @@ export default function Menu() {
 
   return (
     <div className="relative h-screen">
-      <div className={`fixed top-0 left-0 h-full bg-white transition-all duration-300 ${isOpen ? "w-[260px]" : "w-[80px]"} text-black`}>
+      <div className={`fixed top-0 left-0 h-full bg-gray-100 transition-all duration-300 ${isOpen ? "w-[260px]" : "w-[80px]"} text-black`}>
         <button onClick={toggleMenu} className="absolute top-4 right-0 text-white rounded-full z-50">
           {isOpen ? <CaretLeft color="black" size={24} /> : <CaretRight color="black" size={24} />}
         </button>

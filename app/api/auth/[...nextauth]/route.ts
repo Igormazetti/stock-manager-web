@@ -2,6 +2,10 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { cookies } from "next/headers";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+console.log(apiUrl);
+
 export const authOptions: NextAuthOptions = {
   providers: [
     Credentials({
