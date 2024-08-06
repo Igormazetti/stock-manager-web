@@ -14,4 +14,5 @@ export interface ProductRequestData {
   data: Product[];
   status: number;
   statusText: string;
+  pages: number;
 }
