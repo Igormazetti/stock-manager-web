@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { Bag, CaretLeft, CaretRight, Money, Package, SignOut, Users } from "phosphor-react";
+import { usePathname } from "next/navigation";
 
 export default function Menu() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <div className="relative h-screen">
+    <div className="relative h-screen z-40">
       <div className={`fixed top-0 left-0 h-full bg-gray-100 transition-all duration-300 ${isOpen ? "w-[260px]" : "w-[80px]"} text-black`}>
         <button onClick={toggleMenu} className="absolute top-4 right-0 text-white rounded-full z-50">
           {isOpen ? <CaretLeft color="black" size={24} /> : <CaretRight color="black" size={24} />}
@@ -17,33 +19,57 @@ export default function Menu() {
         <div className={`flex flex-col items-center h-full transition-opacity duration-300 ${isOpen ? "gap-4" : "gap-8"} `}>
           <h1 className={`text-2xl mt-4 mb-4 ${isOpen ? "opacity-100" : "opacity-0"}`}>Menu</h1>
           {isOpen ? (
-            <button className="py-2 w-11/12 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition-colors">Produtos</button>
+            <button
+              className={`py-2 w-11/12 text-white rounded-md hover:bg-gray-500 transition-colors ${
+                pathname.includes("products") ? "bg-blue-600 text-white" : "bg-gray-400"
+              }`}
+            >
+              Produtos
+            </button>
           ) : (
-            <button>
+            <button className={pathname.includes("products") ? "bg-blue-600 text-white rounded-md w-[90%] flex justify-center" : ""}>
               <Package size={32} />
             </button>
           )}
 
           {isOpen ? (
-            <button className="py-2 w-11/12 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition-colors">Funcionários</button>
+            <button
+              className={`py-2 w-11/12 text-white rounded-md hover:bg-gray-500 transition-colors ${
+                pathname.includes("workers") ? "bg-blue-600 text-white" : "bg-gray-400"
+              }`}
+            >
+              Funcionários
+            </button>
           ) : (
-            <button>
+            <button className={pathname.includes("workers") ? "bg-blue-600 text-white rounded-md w-[90%] flex justify-center" : ""}>
               <Users size={32} />
             </button>
           )}
 
           {isOpen ? (
-            <button className="py-2 w-11/12 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition-colors">Vendas</button>
+            <button
+              className={`py-2 w-11/12 text-white rounded-md hover:bg-gray-500 transition-colors ${
+                pathname.includes("sales") ? "bg-blue-600 text-white" : "bg-gray-400"
+              }`}
+            >
+              Vendas
+            </button>
           ) : (
-            <button>
+            <button className={pathname.includes("sales") ? "bg-blue-600 text-white rounded-md w-[90%] flex justify-center" : ""}>
               <Money size={32} />
             </button>
           )}
 
           {isOpen ? (
-            <button className="py-2 w-11/12 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition-colors">Compras</button>
+            <button
+              className={`py-2 w-11/12 text-white rounded-md hover:bg-gray-500 transition-colors ${
+                pathname.includes("purchases") ? "bg-blue-600 text-white" : "bg-gray-400"
+              }`}
+            >
+              Compras
+            </button>
           ) : (
-            <button>
+            <button className={pathname.includes("purchases") ? "bg-blue-600 text-white rounded-md w-[90%] flex justify-center" : ""}>
               <Bag size={32} />
             </button>
           )}

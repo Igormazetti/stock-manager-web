@@ -9,7 +9,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
-    <div className="bg-white p-4 rounded shadow-lg">
+    <div className="bg-gray-100 p-4 rounded shadow-lg max-h-[380px]">
       <Image
         src={product.imgUrl || "/placeholder.png"}
         alt={product.title}

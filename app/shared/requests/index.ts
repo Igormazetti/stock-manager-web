@@ -27,7 +27,7 @@ export async function apiFetch<T>(endpoint: string, method: "GET" | "POST" | "PU
 
   try {
     const response = await axios.request<ApiResponse<T>>(config);
-    return response.data as T;
+    return response as T;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Axios error:", error.response);

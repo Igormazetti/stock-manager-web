@@ -8,6 +8,10 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
+  if (sessionToken) {
+    return NextResponse.redirect(new URL("/dashboard/products", req.url));
+  }
+
   return NextResponse.next();
 }
 
