@@ -1,5 +1,5 @@
 "use client";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import Cookies from "js-cookie";
 
 interface ApiResponse<T> {
@@ -11,7 +11,11 @@ interface ApiResponse<T> {
   request?: any;
 }
 
-export async function apiFetch<T>(endpoint: string, method: "GET" | "POST" | "PUT" | "DELETE", data?: any): Promise<T> {
+export async function apiFetch<T>(
+  endpoint: string,
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
+  data?: any,
+): Promise<T> {
   const token = Cookies.get("auth-token");
   const baseURL = process.env.NEXT_PUBLIC_API_URL;
 

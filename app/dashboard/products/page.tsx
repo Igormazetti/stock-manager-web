@@ -13,9 +13,8 @@ export default function ProductsPage() {
   const [pages, setPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editData, setEditData] = useState<Product | null>();
+  const [editData, setEditData] = useState<Product | undefined>();
+  const [pageType, setPageType] = useState<"add" | "edit">();
 
   const { data } = useQuery<Product[]>(["solicitations", skip], () => getProducts(), {
     staleTime: 1000 * 60 * 3,
@@ -34,8 +33,9 @@ export default function ProductsPage() {
   };
 
   const handleOpenEditModal = (productData: Product) => {
+    setPageType("edit");
     setEditData(productData);
-    setIsEditModalOpen(true);
+    setIsModalOpen(true);
   };
 
   const handlePageChange = (page: number) => {
@@ -47,7 +47,10 @@ export default function ProductsPage() {
     <div className="bg-gray-200 w-full h-full p-4 flex flex-col relative">
       <div className="w-full flex justify-end items-center mb-4">
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setPageType("add");
+            setIsModalOpen(true);
+          }}
           className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out"
         >
           Adicionar Produto
@@ -55,7 +58,11 @@ export default function ProductsPage() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full max-h-screen overflow-auto">
         {data?.map((product: Product) => (
-          <ProductCard key={product.id} product={product} handleOpenEdit={() => handleOpenEditModal(product)} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            handleOpenEdit={() => handleOpenEditModal(product)}
+          />
         ))}
       </div>
       <div className="mt-0 w-full flex items-center justify-center bg-transparent">
@@ -69,7 +76,12 @@ export default function ProductsPage() {
         />
       </div>
 
-      <AddProductModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <AddProductModal
+        pageType={pageType}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={editData}
+      />
     </div>
   );
 }

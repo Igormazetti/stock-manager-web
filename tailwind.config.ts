@@ -18,6 +18,6 @@ const config: Config = {
     },
   },
   darkMode: "class",
-  plugins: [require("@tailwindcss/line-clamp"), nextui()],
+  plugins: [nextui()],
 };
 export default config;

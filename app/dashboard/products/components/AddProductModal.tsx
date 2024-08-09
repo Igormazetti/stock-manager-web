@@ -1,18 +1,21 @@
 import CustomInput from "@/app/components/Form/Input";
 import ModalComponent from "@/app/components/Modal/Modal";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ModalBody, ModalFooter, ModalHeader } from "@nextui-org/react";
-import React, { useMemo } from "react";
+import { ModalBody, ModalHeader } from "@nextui-org/react";
+import React, { useEffect, useMemo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import Cookies from "js-cookie";
 import { apiFetch } from "@/app/shared/requests";
 import toast from "react-hot-toast";
 import { queryClient } from "@/app/providers/ReactQueryProvider";
+import { Product } from "@/app/interfaces/product";
 
-interface AddProductModal {
+interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
+  pageType?: "add" | "edit";
+  product?: Product;
 }
 
 interface FormData {
@@ -25,13 +28,26 @@ interface FormData {
 
 const productSchema = yup.object().shape({
   title: yup.string().required("Título é obrigatório"),
-  value: yup.number().typeError("Insira um valor válido").required("Valor é obrigatório").min(1, "Insira um valor válido"),
+  value: yup
+    .number()
+    .typeError("Insira um valor válido")
+    .required("Valor é obrigatório")
+    .min(1, "Insira um valor válido"),
   description: yup.string().required("Descrição é obrigatório"),
-  quantity: yup.number().typeError("Insira um valor válido").required("Quantidade é obrigatório").min(1, "Insira um valor válido"),
+  quantity: yup
+    .number()
+    .typeError("Insira um valor válido")
+    .required("Quantidade é obrigatório")
+    .min(1, "Insira um valor válido"),
   imgUrl: yup.string(),
 });
 
-export default function AddProductModal({ isOpen, onClose }: AddProductModal) {
+export default function AddProductModal({
+  isOpen,
+  onClose,
+  pageType,
+  product,
+}: AddProductModalProps) {
   const cookiesData = Cookies.get("company");
 
   const company = useMemo(() => {
@@ -45,6 +61,7 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModal) {
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
   } = useForm({
@@ -61,7 +78,24 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModal) {
   };
 
   const onSubmitHandler: SubmitHandler<FormData> = async (data) => {
-    console.log(data);
+    if (pageType === "edit" && product) {
+      try {
+        await apiFetch(`/products/update/${product.id}`, "PATCH", {
+          ...data,
+        });
+        toast.success("Produto atualizado com sucesso!");
+
+        queryClient.removeQueries({
+          queryKey: ["solicitations"],
+        });
+
+        handleClose();
+      } catch (error) {
+        toast.error("Erro ao editar produto!");
+      }
+
+      return;
+    }
 
     try {
       await apiFetch(`/products/create`, "POST", {
@@ -80,13 +114,30 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModal) {
     }
   };
 
+  useEffect(() => {
+    if (pageType === "edit" && product) {
+      setValue("title", product.title);
+      setValue("description", product.description);
+      setValue("value", product.value);
+      setValue("quantity", product.quantity);
+      setValue("imgUrl", product.imgUrl || "");
+    }
+  }, [pageType, product, setValue]);
+
   return (
     <ModalComponent isOpen={isOpen} onClose={handleClose}>
       <>
-        <ModalHeader className="flex flex-col gap-1 text-gray-600 w-full text-center">Adicionar Produto</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1 text-gray-600 w-full text-center">
+          {pageType === "edit" ? "Editar Produto" : "Adicionar Produto"}
+        </ModalHeader>
         <ModalBody className="text-gray-500">
           <form onSubmit={handleSubmit(onSubmitHandler)} className="w-full max-w-sm pb-4">
-            <CustomInput label="Título *" id="title" registration={register("title")} error={errors.title?.message} />
+            <CustomInput
+              label="Título *"
+              id="title"
+              registration={register("title")}
+              error={errors.title?.message}
+            />
 
             <CustomInput
               label="Valor (R$) *"
@@ -97,7 +148,12 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModal) {
               error={errors.value?.message}
             />
 
-            <CustomInput label="Descrição *" id="description" registration={register("description")} error={errors.description?.message} />
+            <CustomInput
+              label="Descrição *"
+              id="description"
+              registration={register("description")}
+              error={errors.description?.message}
+            />
 
             <CustomInput
               label="Quantidade *"
@@ -107,13 +163,18 @@ export default function AddProductModal({ isOpen, onClose }: AddProductModal) {
               error={errors.quantity?.message}
             />
 
-            <CustomInput label="Imagem" id="image" registration={register("imgUrl")} error={errors.imgUrl?.message} />
+            <CustomInput
+              label="Imagem"
+              id="image"
+              registration={register("imgUrl")}
+              error={errors.imgUrl?.message}
+            />
 
             <button
               type="submit"
               className="mt-2 bg-blue-600 w-full text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out"
             >
-              Salvar
+              {pageType === "edit" ? "Editar" : "Salvar"}
             </button>
           </form>
         </ModalBody>

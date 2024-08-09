@@ -46,7 +46,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, handleOpenEdit }) =>
           onClick={toggleMenu}
         />
         {isMenuOpen && (
-          <div ref={menuRef} className="absolute top-full right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+          <div
+            ref={menuRef}
+            className="absolute top-full right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10"
+          >
             <ul className="list-none p-2 text-gray-600">
               <li
                 className="py-2 px-4 hover:bg-gray-200 cursor-pointer flex gap-2 items-center"
@@ -57,7 +60,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, handleOpenEdit }) =>
                 <Info size={20} />
                 Detalhes
               </li>
-              <li className="py-2 px-4 hover:bg-gray-200 cursor-pointer flex gap-2 items-center" onClick={handleOpenEdit}>
+              <li
+                className="py-2 px-4 hover:bg-gray-200 cursor-pointer flex gap-2 items-center"
+                onClick={handleOpenEdit}
+              >
                 <Pencil size={20} />
                 Editar
               </li>
@@ -76,7 +82,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, handleOpenEdit }) =>
       />
       <h3 className="text-gray-800 text-lg font-bold mt-2 mb-2">{product.title}</h3>
       <p className="text-gray-600 line-clamp-2">{product.description}</p>
-      <p className={`${product.quantity > 0 ? "text-gray-800" : "text-red-600"} font-semibold mt-1`}>
+      <p
+        className={`${product.quantity > 0 ? "text-gray-800" : "text-red-600"} font-semibold mt-1`}
+      >
         {product.quantity > 0 ? `Em estoque: ${product.quantity}` : "Fora de estoque"}
       </p>
       <p className="text-gray-800 font-semibold mt-1">{formatToBRL(product.value)}</p>
