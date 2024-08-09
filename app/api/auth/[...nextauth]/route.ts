@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
         }).then((response) => response.json());
 
         cookies().set("auth-token", response.token);
-        cookies().set("company", response.company);
+        cookies().set("company", JSON.stringify(response.company));
 
         if (!response.errorMessage) {
           return response;

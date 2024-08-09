@@ -1,40 +1,122 @@
+import CustomInput from "@/app/components/Form/Input";
 import ModalComponent from "@/app/components/Modal/Modal";
-import { Button, ModalBody, ModalFooter, ModalHeader } from "@nextui-org/react";
-import React from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ModalBody, ModalFooter, ModalHeader } from "@nextui-org/react";
+import React, { useMemo } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import * as yup from "yup";
+import Cookies from "js-cookie";
+import { apiFetch } from "@/app/shared/requests";
+import toast from "react-hot-toast";
+import { queryClient } from "@/app/providers/ReactQueryProvider";
 
 interface AddProductModal {
   isOpen: boolean;
   onClose: () => void;
 }
 
+interface FormData {
+  title: string;
+  value: number;
+  description: string;
+  quantity: number;
+  imgUrl?: string;
+}
+
+const productSchema = yup.object().shape({
+  title: yup.string().required("Título é obrigatório"),
+  value: yup.number().typeError("Insira um valor válido").required("Valor é obrigatório").min(1, "Insira um valor válido"),
+  description: yup.string().required("Descrição é obrigatório"),
+  quantity: yup.number().typeError("Insira um valor válido").required("Quantidade é obrigatório").min(1, "Insira um valor válido"),
+  imgUrl: yup.string(),
+});
+
 export default function AddProductModal({ isOpen, onClose }: AddProductModal) {
+  const cookiesData = Cookies.get("company");
+
+  const company = useMemo(() => {
+    if (cookiesData) {
+      return JSON.parse(cookiesData);
+    }
+
+    return null;
+  }, [cookiesData]);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(productSchema),
+    defaultValues: {
+      quantity: 0,
+      value: 0,
+    },
+  });
+
+  const handleClose = () => {
+    onClose();
+    reset();
+  };
+
+  const onSubmitHandler: SubmitHandler<FormData> = async (data) => {
+    console.log(data);
+
+    try {
+      await apiFetch(`/products/create`, "POST", {
+        ...data,
+        companyId: company.id,
+      });
+      toast.success("Produto salvo com sucesso!");
+
+      queryClient.removeQueries({
+        queryKey: ["solicitations"],
+      });
+
+      handleClose();
+    } catch (error) {
+      toast.error("Erro ao salvar produto!");
+    }
+  };
+
   return (
-    <ModalComponent isOpen={isOpen} onClose={onClose}>
+    <ModalComponent isOpen={isOpen} onClose={handleClose}>
       <>
-        <ModalHeader className="flex flex-col gap-1">Adicionar Produto</ModalHeader>
-        <ModalBody>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non risus hendrerit venenatis. Pellentesque sit
-            amet hendrerit risus, sed porttitor quam.
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non risus hendrerit venenatis. Pellentesque sit
-            amet hendrerit risus, sed porttitor quam.
-          </p>
-          <p>
-            Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-            incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi
-            consectetur esse laborum eiusmod pariatur proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
-          </p>
+        <ModalHeader className="flex flex-col gap-1 text-gray-600 w-full text-center">Adicionar Produto</ModalHeader>
+        <ModalBody className="text-gray-500">
+          <form onSubmit={handleSubmit(onSubmitHandler)} className="w-full max-w-sm pb-4">
+            <CustomInput label="Título *" id="title" registration={register("title")} error={errors.title?.message} />
+
+            <CustomInput
+              label="Valor (R$) *"
+              id="value"
+              type="number"
+              step="0.01"
+              registration={register("value")}
+              error={errors.value?.message}
+            />
+
+            <CustomInput label="Descrição *" id="description" registration={register("description")} error={errors.description?.message} />
+
+            <CustomInput
+              label="Quantidade *"
+              id="quantity"
+              type="number"
+              registration={register("quantity")}
+              error={errors.quantity?.message}
+            />
+
+            <CustomInput label="Imagem" id="image" registration={register("imgUrl")} error={errors.imgUrl?.message} />
+
+            <button
+              type="submit"
+              className="mt-2 bg-blue-600 w-full text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out"
+            >
+              Salvar
+            </button>
+          </form>
         </ModalBody>
-        <ModalFooter>
-          <Button color="danger" variant="solid" onPress={() => console.log("")}>
-            Fechar
-          </Button>
-          <Button color="primary" onPress={() => console.log("")}>
-            Salvar
-          </Button>
-        </ModalFooter>
       </>
     </ModalComponent>
   );

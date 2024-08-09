@@ -4,7 +4,7 @@ import "./globals.css";
 import NextAuthSessionProvider from "@/providers/sessionProvider";
 import { Toaster } from "react-hot-toast";
 import { NextUIProvider } from "@nextui-org/react";
-import ReactQueryProvider from "./providers/ReactQueryProvider";
+import { ReactQueryProvider } from "./providers/ReactQueryProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
