@@ -7,9 +7,14 @@ import { DotsThreeVertical, Info, Pencil } from "phosphor-react";
 interface ProductCardProps {
   product: Product;
   handleOpenEdit: () => void;
+  handleOpenDetails: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, handleOpenEdit }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  handleOpenEdit,
+  handleOpenDetails,
+}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
@@ -53,9 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, handleOpenEdit }) =>
             <ul className="list-none p-2 text-gray-600">
               <li
                 className="py-2 px-4 hover:bg-gray-200 cursor-pointer flex gap-2 items-center"
-                onClick={() => {
-                  console.log("Detalhes clicked");
-                }}
+                onClick={handleOpenDetails}
               >
                 <Info size={20} />
                 Detalhes
@@ -72,14 +75,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, handleOpenEdit }) =>
         )}
       </div>
 
-      <Image
-        src={product.imgUrl || "/placeholder.png"}
-        alt={product.title}
-        width={20}
-        height={20}
-        layout="responsive"
-        className="w-full object-contain rounded max-h-[200px]"
-      />
+      {product?.imgUrl ? (
+        <Image
+          src={product.imgUrl || "/placeholder.png"}
+          alt={product.title}
+          width={20}
+          height={20}
+          layout="responsive"
+          className="w-full object-contain rounded max-h-[200px]"
+        />
+      ) : (
+        <div className="w-full flex h-full max-h-[200px] items-center justify-center">
+          <div className="w-[90%] h-full bg-gray-200 flex items-center justify-center">
+            <span>Sem Imagem</span>
+          </div>
+        </div>
+      )}
+
       <h3 className="text-gray-800 text-lg font-bold mt-2 mb-2">{product.title}</h3>
       <p className="text-gray-600 line-clamp-2">{product.description}</p>
       <p

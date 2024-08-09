@@ -7,6 +7,7 @@ import ProductCard from "./components/ProductCard";
 import { Pagination } from "@nextui-org/pagination";
 import AddProductModal from "./components/AddProductModal";
 import { useQuery } from "react-query";
+import DetailsModal from "./components/DetailsModal";
 
 export default function ProductsPage() {
   const [skip, setSkip] = useState(0);
@@ -14,6 +15,8 @@ export default function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState<Product | undefined>();
+  const [productDetail, setProductDetail] = useState<Product | undefined>();
+  const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
   const [pageType, setPageType] = useState<"add" | "edit">();
 
   const { data } = useQuery<Product[]>(["solicitations", skip], () => getProducts(), {
@@ -36,6 +39,11 @@ export default function ProductsPage() {
     setPageType("edit");
     setEditData(productData);
     setIsModalOpen(true);
+  };
+
+  const handleOpenDetailsModal = (productData: Product) => {
+    setProductDetail(productData);
+    setIsOpenDetailsModal(true);
   };
 
   const handlePageChange = (page: number) => {
@@ -62,6 +70,7 @@ export default function ProductsPage() {
             key={product.id}
             product={product}
             handleOpenEdit={() => handleOpenEditModal(product)}
+            handleOpenDetails={() => handleOpenDetailsModal(product)}
           />
         ))}
       </div>
@@ -81,6 +90,12 @@ export default function ProductsPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         product={editData}
+      />
+
+      <DetailsModal
+        isOpen={isOpenDetailsModal}
+        onClose={() => setIsOpenDetailsModal(false)}
+        product={productDetail}
       />
     </div>
   );
