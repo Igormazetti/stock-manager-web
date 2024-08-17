@@ -2,11 +2,12 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { Spinner } from "@nextui-org/spinner";
 
 interface FormData {
   email: string;
@@ -15,11 +16,17 @@ interface FormData {
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("Insira um email válido").required("Email é obrigatório"),
-  password: yup.string().min(6, "Senha deve ter ao menos 6 caracteres").required("Insira uma senha"),
+  password: yup
+    .string()
+    .min(6, "Senha deve ter ao menos 6 caracteres")
+    .required("Insira uma senha"),
 });
 
 export default function Login() {
   const size = useWindowSize();
+
+  const [loading, setLoading] = useState(false);
+
   const isMobile = useMemo(() => {
     if (size && size.width) {
       return size.width < 460;
@@ -39,6 +46,7 @@ export default function Login() {
   });
 
   const onSubmitHandler: SubmitHandler<FormData> = async (data) => {
+    setLoading(true);
     const login = await signIn("credentials", {
       email: data.email,
       password: data.password,
@@ -47,9 +55,11 @@ export default function Login() {
 
     if (login?.error) {
       toast.error("Login ou senha inválidos");
+      setLoading(false);
       return;
     }
 
+    setLoading(false);
     router.replace("/dashboard/products");
     reset();
   };
@@ -73,7 +83,9 @@ export default function Login() {
               className="border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2 rounded-md"
               {...register("email")}
             />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+            )}
           </div>
           <div className="mb-6">
             <label htmlFor="password" className="block text-sm font-medium mb-1">
@@ -85,11 +97,22 @@ export default function Login() {
               className="border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2 rounded-md"
               {...register("password")}
             />
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+            )}
           </div>
-          <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 w-full">
-            Login
-          </button>
+          {loading ? (
+            <div className="flex items-center justify-center w-full">
+              <Spinner size="sm" />
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 w-full"
+            >
+              Login
+            </button>
+          )}
         </form>
       </div>
     </div>
