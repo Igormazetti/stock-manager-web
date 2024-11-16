@@ -1,5 +1,5 @@
 "use client";
-import { PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react";
 import Menu from "../Menu/Menu";
 
 export const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {

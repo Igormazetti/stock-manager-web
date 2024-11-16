@@ -1,5 +1,5 @@
 "use client";
-import { Product } from "@/app/interfaces/product";
+import { Product, ProductRequestData } from "@/app/interfaces/product";
 import { apiFetch } from "@/app/shared/requests";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
@@ -24,14 +24,18 @@ export default function ProductsPage() {
     refetchInterval: 1000 * 60 * 3,
   });
 
-  const getProducts = async () => {
+  const getProducts = async (): Promise<Product[]> => {
     try {
-      const response = await apiFetch<any>(`/products?skip=${skip}&take=8`, "GET");
+      const response = await apiFetch<ProductRequestData>(
+        `/products?skip=${skip}&take=8`,
+        "GET",
+      );
       setPages(response.data.pages);
       return response.data.products || [];
     } catch (error) {
       console.log(error);
       toast.error("Erro ao carregar produtos");
+      return [];
     }
   };
 
@@ -74,7 +78,7 @@ export default function ProductsPage() {
           />
         ))}
       </div>
-      <div className="mt-0 w-full flex items-center justify-center bg-transparent">
+      <div className="mt-4 2xl:mt-0 w-full flex items-center justify-center bg-transparent">
         <Pagination
           variant="flat"
           showControls

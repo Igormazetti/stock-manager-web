@@ -1,6 +1,6 @@
 import React from "react";
 import { DashboardLayout } from "../components/DashboardLayout/DashboardLayout";
-import Cookies from "js-cookie";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default function DashLayout({
@@ -8,7 +8,7 @@ export default function DashLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookiesData = Cookies.get("auth-token");
+  const cookiesData = cookies().get("auth-token");
 
   if (!cookiesData) {
     redirect("/login");

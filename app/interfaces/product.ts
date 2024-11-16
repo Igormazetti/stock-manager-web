@@ -11,8 +11,10 @@ export interface Product {
 }
 
 export interface ProductRequestData {
-  data: Product[];
-  status: number;
-  statusText: string;
-  pages: number;
+  data: {
+    products: Product[];
+    status: number;
+    statusText: string;
+    pages: number;
+  };
 }
