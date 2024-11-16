@@ -39,7 +39,7 @@ export default function Login() {
   const {
     register,
     handleSubmit,
-    reset,
+    // reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(loginSchema),
@@ -59,9 +59,8 @@ export default function Login() {
       return;
     }
 
-    setLoading(false);
     router.replace("/dashboard/products");
-    reset();
+    setLoading(false);
   };
 
   return (

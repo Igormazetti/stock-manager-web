@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
+import { Modal, ModalContent } from "@nextui-org/react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -8,7 +8,13 @@ interface ModalProps {
   children: ReactNode;
 }
 
-export default function ModalComponent({ isOpen, onClose, children, size, ...rest }: ModalProps) {
+export default function ModalComponent({
+  isOpen,
+  onClose,
+  children,
+  size,
+  ...rest
+}: ModalProps) {
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} size={size} {...rest}>
