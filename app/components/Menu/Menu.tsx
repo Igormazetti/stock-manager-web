@@ -102,6 +102,11 @@ export default function Menu() {
 
           {isOpen ? (
             <button
+              onClick={() => {
+                if (!pathname.includes("sales")) {
+                  router.push("/dashboard/sales");
+                }
+              }}
               className={`py-2 w-11/12 text-white rounded-md hover:bg-gray-500 transition-colors ${
                 pathname.includes("sales") ? "bg-blue-600 text-white" : "bg-gray-400"
               }`}
@@ -110,6 +115,11 @@ export default function Menu() {
             </button>
           ) : (
             <button
+              onClick={() => {
+                if (!pathname.includes("sales")) {
+                  router.push("/dashboard/sales");
+                }
+              }}
               className={
                 pathname.includes("sales")
                   ? "bg-blue-600 text-white rounded-md w-[90%] flex justify-center"
