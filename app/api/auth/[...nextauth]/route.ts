@@ -15,25 +15,30 @@ export const authOptions: NextAuthOptions = {
         password: { label: "password", type: "password" },
       },
       async authorize(credentials, req) {
-        const response = await fetch("http://localhost:6060/company/login", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            email: credentials?.email,
-            password: credentials?.password,
-          }),
-        }).then((response) => response.json());
+        try {
+          const response = await fetch("http://localhost:6060/company/login", {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              email: credentials?.email,
+              password: credentials?.password,
+            }),
+          }).then((response) => response.json());
 
-        cookies().set("auth-token", response.token);
-        cookies().set("company", JSON.stringify(response.company));
+          if (response.token && response.company) {
+            cookies().set("auth-token", response.token);
+            cookies().set("company", JSON.stringify(response.company));
+            return response;
+          }
 
-        if (!response.errorMessage) {
-          return response;
+          console.error(response.errorMessage);
+          return null;
+        } catch (error) {
+          console.error("Erro ao autenticar:", error);
+          return null;
         }
-
-        return null;
       },
     }),
   ],

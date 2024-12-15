@@ -38,7 +38,7 @@ const productSchema = yup.object().shape({
     .number()
     .typeError("Insira um valor válido")
     .required("Quantidade é obrigatório")
-    .min(1, "Insira um valor válido"),
+    .min(0, "Insira um valor válido"),
   imgUrl: yup.string(),
 });
 
@@ -115,14 +115,17 @@ export default function AddProductModal({
   };
 
   useEffect(() => {
-    if (pageType === "edit" && product) {
+    if (isOpen && pageType === "edit" && product) {
       setValue("title", product.title);
       setValue("description", product.description);
       setValue("value", product.value);
       setValue("quantity", product.quantity);
       setValue("imgUrl", product.imgUrl || "");
+    } else {
+      reset();
     }
-  }, [pageType, product, setValue]);
+  }, [isOpen, pageType, product, setValue, reset]);
+
 
   return (
     <ModalComponent isOpen={isOpen} onClose={handleClose}>

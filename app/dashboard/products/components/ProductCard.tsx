@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Product } from "@/app/interfaces/product";
 import Image from "next/image";
 import { formatToBRL } from "@/app/utils/currency";
-import { DotsThreeVertical, Info, Pencil } from "phosphor-react";
+import { DotsThreeVertical, Info, Pencil, Plus, Minus } from "phosphor-react";
 
 interface ProductCardProps {
   product: Product;
@@ -42,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   }, []);
 
   return (
-    <div className="bg-gray-100 p-4 rounded shadow-lg max-h-[380px] relative">
+    <div className="bg-gray-100 p-4 rounded-md shadow-lg max-h-[280px] relative">
       <div ref={buttonRef} className="absolute top-2 right-1">
         <DotsThreeVertical
           size={32}
@@ -50,6 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="cursor-pointer transition-opacity duration-200 ease-in-out hover:opacity-60"
           onClick={toggleMenu}
         />
+      
         {isMenuOpen && (
           <div
             ref={menuRef}
@@ -79,27 +80,27 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <Image
           src={product.imgUrl || "/placeholder.png"}
           alt={product.title}
-          width={20}
-          height={20}
+          width={16}
+          height={16}
           layout="responsive"
-          className="w-full object-contain rounded max-h-[200px]"
+          className="w-full object-contain rounded max-h-[150px]"
         />
       ) : (
-        <div className="w-full flex h-full max-h-[200px] items-center justify-center">
-          <div className="w-[90%] h-full bg-gray-200 flex items-center justify-center">
+        <div className="w-full flex h-full max-h-[150px] items-center justify-center">
+          <div className="w-[80%] h-full bg-gray-200 flex items-center justify-center">
             <span>Sem Imagem</span>
           </div>
         </div>
       )}
 
-      <h3 className="text-gray-800 text-lg font-bold mt-2 mb-2">{product.title}</h3>
-      <p className="text-gray-600 line-clamp-2">{product.description}</p>
+      <h3 className="text-gray-800 text-sm font-bold mt-1 mb-1">{product.title}</h3>
+      <p className="text-gray-600 line-clamp-2 text-xs">{product.description}</p>
       <p
-        className={`${product.quantity > 0 ? "text-gray-800" : "text-red-600"} font-semibold mt-1`}
+        className={`${product.quantity > 0 ? "text-gray-800" : "text-red-600"} font-semibold text-xs mt-1`}
       >
         {product.quantity > 0 ? `Em estoque: ${product.quantity}` : "Fora de estoque"}
       </p>
-      <p className="text-gray-800 font-semibold mt-1">{formatToBRL(product.value)}</p>
+      <p className="text-gray-800 font-semibold text-xs mt-1">{formatToBRL(product.value)}</p>
     </div>
   );
 };

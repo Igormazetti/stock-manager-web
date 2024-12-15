@@ -70,7 +70,7 @@ export default function Menu() {
             </button>
           )}
 
-          {isOpen ? (
+          {/* {isOpen ? (
             <button
               onClick={() => {
                 if (!pathname.includes("employees")) {
@@ -98,9 +98,9 @@ export default function Menu() {
             >
               <Users size={32} />
             </button>
-          )}
+          )} */}
 
-          {isOpen ? (
+          {/* {isOpen ? (
             <button
               onClick={() => {
                 if (!pathname.includes("sales")) {
@@ -128,9 +128,9 @@ export default function Menu() {
             >
               <Money size={32} />
             </button>
-          )}
+          )} */}
 
-          {isOpen ? (
+          {/* {isOpen ? (
             <button
               className={`py-2 w-11/12 text-white rounded-md hover:bg-gray-500 transition-colors ${
                 pathname.includes("purchases") ? "bg-blue-600 text-white" : "bg-gray-400"
@@ -148,7 +148,7 @@ export default function Menu() {
             >
               <Bag size={32} />
             </button>
-          )}
+          )} */}
         </div>
         <div className="absolute bottom-4 w-full">
           <div className="flex w-full justify-end pr-5">
