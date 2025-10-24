@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import {
-  Bag,
   CaretLeft,
   CaretRight,
   Money,
   Package,
   SignOut,
-  Users,
 } from "phosphor-react";
 import { usePathname, useRouter } from "next/navigation";
+import MenuButton from "../MenuButton/MenuButton";
 
 export default function Menu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,40 +34,17 @@ export default function Menu() {
           )}
         </button>
         <div
-          className={`flex flex-col items-center h-full transition-opacity duration-300 ${isOpen ? "gap-4" : "gap-8"} `}
+          className={`flex flex-col items-center h-full transition-opacity duration-300 gap-4 `}
         >
           <h1 className={`text-2xl mt-4 mb-4 ${isOpen ? "opacity-100" : "opacity-0"}`}>
             Menu
           </h1>
-          {isOpen ? (
-            <button
-              onClick={() => {
-                if (!pathname.includes("products")) {
-                  router.push("/dashboard/products");
-                }
-              }}
-              className={`py-2 w-11/12 text-white rounded-md hover:bg-gray-500 transition-colors ${
-                pathname.includes("products") ? "bg-blue-600 text-white" : "bg-gray-400"
-              }`}
-            >
-              Produtos
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                if (!pathname.includes("products")) {
-                  router.push("/dashboard/products");
-                }
-              }}
-              className={
-                pathname.includes("products")
-                  ? "bg-blue-600 text-white rounded-md w-[90%] flex justify-center"
-                  : ""
-              }
-            >
-              <Package size={32} />
-            </button>
-          )}
+
+          <MenuButton path="products" isOpen={isOpen} />          
+
+          {/* Vendas */}
+           
+          <MenuButton path="sales" isOpen={isOpen} />        
 
           {/* {isOpen ? (
             <button
@@ -100,35 +76,7 @@ export default function Menu() {
             </button>
           )} */}
 
-          {/* {isOpen ? (
-            <button
-              onClick={() => {
-                if (!pathname.includes("sales")) {
-                  router.push("/dashboard/sales");
-                }
-              }}
-              className={`py-2 w-11/12 text-white rounded-md hover:bg-gray-500 transition-colors ${
-                pathname.includes("sales") ? "bg-blue-600 text-white" : "bg-gray-400"
-              }`}
-            >
-              Vendas
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                if (!pathname.includes("sales")) {
-                  router.push("/dashboard/sales");
-                }
-              }}
-              className={
-                pathname.includes("sales")
-                  ? "bg-blue-600 text-white rounded-md w-[90%] flex justify-center"
-                  : ""
-              }
-            >
-              <Money size={32} />
-            </button>
-          )} */}
+          {/*  */}
 
           {/* {isOpen ? (
             <button
