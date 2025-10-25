@@ -16,6 +16,7 @@ interface AddProductModalProps {
   onClose: () => void;
   pageType?: "add" | "edit";
   product?: Product;
+  refetch: () => Promise<void>;
 }
 
 interface FormData {
@@ -47,6 +48,7 @@ export default function AddProductModal({
   onClose,
   pageType,
   product,
+  refetch
 }: AddProductModalProps) {
   const cookiesData = Cookies.get("company");
 
@@ -85,9 +87,7 @@ export default function AddProductModal({
         });
         toast.success("Produto atualizado com sucesso!");
 
-        queryClient.removeQueries({
-          queryKey: ["solicitations"],
-        });
+        await refetch();
 
         handleClose();
       } catch (error) {
@@ -102,14 +102,13 @@ export default function AddProductModal({
         ...data,
         companyId: company.id,
       });
-      toast.success("Produto salvo com sucesso!");
+      toast.success("Produto adicionado com sucesso!");
 
-      queryClient.removeQueries({
-        queryKey: ["solicitations"],
-      });
+      await refetch();
 
       handleClose();
     } catch (error) {
+      console.log(error)
       toast.error("Erro ao salvar produto!");
     }
   };
