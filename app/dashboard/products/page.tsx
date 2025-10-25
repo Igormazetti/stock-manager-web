@@ -1,6 +1,6 @@
 "use client";
 import { Product } from "@/app/interfaces/product";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ProductCard from "./components/ProductCard";
 import { Pagination } from "@nextui-org/pagination";
 import AddProductModal from "./components/AddProductModal";
@@ -55,7 +55,7 @@ export default function ProductsPage() {
           <select
             value={filterOption}
             onChange={(e) => setFilterOption(e.target.value)}
-            className="border rounded-lg p-2 text-gray-600"
+            className="border rounded-lg p-2 text-gray-600 hover:cursor-pointer"
           >
             <option value="menor">Menor estoque</option>
             <option value="maior">Maior estoque</option>

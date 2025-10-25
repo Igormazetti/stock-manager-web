@@ -1,39 +1,17 @@
 "use client";
-import { Sale, SaleRequestData } from "@/app/interfaces/sales";
-import { apiFetch } from "@/app/shared/requests";
 import React, { useState } from "react";
-import toast from "react-hot-toast";
 import { Pagination } from "@nextui-org/pagination";
-import { useQuery } from "react-query";
 import SalesTable from "./components/SalesTable";
+import { useSales } from "@/app/hooks/useSales";
 
 export default function SalesPage() {
   const [skip, setSkip] = useState(0);
-  const [pages, setPages] = useState(0);
   const [createdAt, setCreatedAt] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   // const [isOpenDetailsModal, setIsOpenDetailsModal] = useState(false);
 
-  const { data } = useQuery<Sale[]>(["sales", skip, createdAt], () => getProducts(), {
-    staleTime: 1000 * 60 * 3,
-    refetchInterval: 1000 * 60 * 3,
-  });
-
-  const getProducts = async (): Promise<Sale[]> => {
-    try {
-      const response = await apiFetch<SaleRequestData>(
-        `/sales?skip=${skip}&createdAt=${createdAt}`,
-        "GET",
-      );
-      setPages(response.data.pages);
-      return response.data.sales || [];
-    } catch (error) {
-      console.log(error);
-      toast.error("Erro ao carregar produtos");
-      return [];
-    }
-  };
+ const {sales, pages, refetch} = useSales({skip, createdAt})
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -58,7 +36,7 @@ export default function SalesPage() {
         ))}
       </div> */}
       <div className="flex items-center justify-center">
-        <SalesTable sales={data ?? []} onClick={(e) => console.log(e)} />
+        <SalesTable sales={sales ?? []} onClick={(e) => console.log(e)} />
       </div>
       <div className="mt-4 w-full flex items-center justify-center bg-transparent">
         <Pagination

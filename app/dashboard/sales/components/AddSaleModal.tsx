@@ -8,7 +8,6 @@ import * as yup from "yup";
 import Cookies from "js-cookie";
 import { apiFetch } from "@/app/shared/requests";
 import toast from "react-hot-toast";
-import { queryClient } from "@/app/providers/ReactQueryProvider";
 import { Sale } from "@/app/interfaces/sales";
 import Select from "react-select";
 
@@ -73,7 +72,6 @@ export default function AddSaleModal({ isOpen, onClose }: AddSaleModalProps) {
     try {
       await apiFetch(`/sales`, "POST", data);
       toast.success("Venda registrada com sucesso!");
-      queryClient.invalidateQueries(["sales"]);
       handleClose();
     } catch (error) {
       toast.error("Erro ao registrar venda!");

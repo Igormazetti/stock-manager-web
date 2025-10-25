@@ -8,7 +8,6 @@ import * as yup from "yup";
 import Cookies from "js-cookie";
 import { apiFetch } from "@/app/shared/requests";
 import toast from "react-hot-toast";
-import { queryClient } from "@/app/providers/ReactQueryProvider";
 import { Product } from "@/app/interfaces/product";
 
 interface AddProductModalProps {
