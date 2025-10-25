@@ -12,8 +12,6 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
   const pathname = usePathname();
   const router = useRouter();
 
-  console.log(isOpen);
-
   const getIcon = () => {
     switch (path) {
       case "products":
@@ -32,7 +30,7 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
     }
   }
 
-  const handleClick = (path: string) => {
+  const handleClick = () => {
     if (!pathname.includes(path)) {
       router.push(`/dashboard/${path}`);
     }
@@ -45,7 +43,7 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
   return (
     !isOpen ? (
     <button
-    onClick={() => handleClick(pathname)}    
+    onClick={() => handleClick()}    
     className={
       isActive(pathname)
         ? "bg-blue-600 text-white rounded-md h-10 w-[90%] flex justify-center items-center"
@@ -56,7 +54,7 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
   </button>
   ) : (
     <button
-    onClick={() => handleClick(pathname)}    
+    onClick={() => handleClick()}    
     className={
       isActive(pathname)
         ? "bg-blue-600 text-white rounded-md h-10 w-[90%] flex justify-center items-center"
