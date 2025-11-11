@@ -1,6 +1,6 @@
 "use client";
 import { Product } from "@/app/interfaces/product";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "./components/ProductCard";
 import { Pagination } from "@nextui-org/pagination";
 import AddProductModal from "./components/AddProductModal";
@@ -72,7 +72,7 @@ export default function ProductsPage() {
           />
           <MagnifyingGlass className="absolute right-6 top-2" size={26} color="gray" />
         </div>
-        
+
         <button
           onClick={() => {
             setPageType("add");
