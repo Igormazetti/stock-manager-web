@@ -2,6 +2,7 @@ export interface Product {
   id: string;
   title: string;
   value: number;
+  originalValue: number;
   description: string;
   quantity: number;
   companyId: string;

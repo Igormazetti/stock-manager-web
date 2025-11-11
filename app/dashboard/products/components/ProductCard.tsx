@@ -101,6 +101,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {product.quantity > 0 ? `Em estoque: ${product.quantity}` : "Fora de estoque"}
       </p>
       <p className="text-gray-800 font-semibold text-xs mt-1">{formatToBRL(product.value)}</p>
+      <p className="text-gray-600 text-xs mt-1">Custo: {formatToBRL(product.originalValue)}</p>
     </div>
   );
 };

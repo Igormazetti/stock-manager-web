@@ -21,6 +21,7 @@ interface AddProductModalProps {
 interface FormData {
   title: string;
   value: number;
+  originalValue: number;
   description: string;
   quantity: number;
   imgUrl?: string;
@@ -32,6 +33,11 @@ const productSchema = yup.object().shape({
     .number()
     .typeError("Insira um valor válido")
     .required("Valor é obrigatório")
+    .min(1, "Insira um valor válido"),
+  originalValue: yup
+    .number()
+    .typeError("Insira um valor válido")
+    .required("Valor de custo é obrigatório")
     .min(1, "Insira um valor válido"),
   description: yup.string().required("Descrição é obrigatório"),
   quantity: yup
@@ -70,6 +76,7 @@ export default function AddProductModal({
     defaultValues: {
       quantity: 0,
       value: 0,
+      originalValue: 0,
     },
   });
 
@@ -117,6 +124,7 @@ export default function AddProductModal({
       setValue("title", product.title);
       setValue("description", product.description);
       setValue("value", product.value);
+      setValue("originalValue", product.originalValue);
       setValue("quantity", product.quantity);
       setValue("imgUrl", product.imgUrl || "");
     } else {
@@ -147,6 +155,15 @@ export default function AddProductModal({
               step="0.01"
               registration={register("value")}
               error={errors.value?.message}
+            />
+
+            <CustomInput
+              label="Valor de custo *"
+              id="originalValue"
+              type="number"
+              step="0.01"
+              registration={register("originalValue")}
+              error={errors.originalValue?.message}
             />
 
             <CustomInput

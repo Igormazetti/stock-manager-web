@@ -43,6 +43,13 @@ export default function DetailsModal({ isOpen, onClose, product }: AddProductMod
               currency: "BRL",
             })}
           </p>
+          <p className="text-gray-800 font-bold">
+            Valor de custo:{" "}
+            {product?.originalValue.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
+          </p>
         </div>
       </ModalBody>
     </ModalComponent>
