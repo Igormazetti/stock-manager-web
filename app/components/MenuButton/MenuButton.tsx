@@ -1,6 +1,6 @@
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Package, Money
+  Package, Money, Users
 } from "phosphor-react";
 
 interface IMenuButton {
@@ -18,6 +18,8 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
         return <Package size={32} />;
       case "sales":
         return <Money size={32} />;
+      case "clients":
+        return <Users size={32} />;
     }
   }
 
@@ -27,6 +29,8 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
         return "Produtos";
       case "sales":
         return "Vendas";
+      case "clients":
+        return "Clientes";
     }
   }
 

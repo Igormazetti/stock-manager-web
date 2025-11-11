@@ -5,6 +5,7 @@ import {
   Money,
   Package,
   SignOut,
+  Users,
 } from "phosphor-react";
 import { usePathname, useRouter } from "next/navigation";
 import MenuButton from "../MenuButton/MenuButton";
@@ -40,11 +41,14 @@ export default function Menu() {
             Menu
           </h1>
 
-          <MenuButton path="products" isOpen={isOpen} />          
+          <MenuButton path="products" isOpen={isOpen} />
 
           {/* Vendas */}
-           
-          <MenuButton path="sales" isOpen={isOpen} />        
+
+          <MenuButton path="sales" isOpen={isOpen} />
+
+          {/* Clientes */}
+          <MenuButton path="clients" isOpen={isOpen} />        
 
           {/* {isOpen ? (
             <button
