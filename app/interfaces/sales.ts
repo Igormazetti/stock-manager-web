@@ -1,28 +1,34 @@
+import { Client } from "./client";
+
+export interface SaleProduct {
+  id: string;
+  product_id: string;
+  sale_id: string;
+  quantity_sold: number;
+  Product: {
+    id: string;
+    title: string;
+    value: number;
+    description: string;
+    quantity: number;
+    companyId: string;
+    imgUrl: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
 export interface Sale {
   id: string;
   client: string;
+  clientId?: string;
+  Client?: Client;
   company_id: string;
   createdAt: string;
   totalValue: number;
-  Products: [
-    {
-      id: string;
-      product_id: string;
-      sale_id: string;
-      quantity_sold: number;
-      Product: {
-        id: string;
-        title: string;
-        value: number;
-        description: string;
-        quantity: number;
-        companyId: string;
-        imgUrl: string | null;
-        createdAt: string;
-        updatedAt: string;
-      };
-    },
-  ];
+  Products: SaleProduct[];
+  discount?: number;
+  observation?: string;
 }
 
 export interface SaleRequestData {

@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 interface UseSalesParams {
   skip: number;
   createdAt?: string;
+  clientName?: string;
+  product?: string;
 }
 
 interface UseProductsReturn {
@@ -16,7 +18,7 @@ interface UseProductsReturn {
   refetch: () => Promise<void>;
 }
 
-export function useSales({ skip, createdAt }: UseSalesParams): UseProductsReturn {
+export function useSales({ skip, createdAt, clientName, product }: UseSalesParams): UseProductsReturn {
   const [sales, setSales] = useState<Sale[]>([]);
   const [pages, setPages] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,10 +27,16 @@ export function useSales({ skip, createdAt }: UseSalesParams): UseProductsReturn
   const fetchSales = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
+      const params = new URLSearchParams();
+      params.append("skip", skip.toString());
+      if (createdAt) params.append("createdAt", createdAt);
+      if (clientName) params.append("clientName", clientName);
+      if (product) params.append("product", product);
+
       const response = await apiFetch<SaleRequestData>(
-        `/sales?skip=${skip}&createdAt=${createdAt}`,
+        `/sales?${params.toString()}`,
         "GET",
       );
       setPages(response.data.pages);
@@ -37,7 +45,7 @@ export function useSales({ skip, createdAt }: UseSalesParams): UseProductsReturn
       const error = err as Error;
       setError(error);
       console.log(error);
-      toast.error("Erro ao carregar produtos");
+      toast.error("Erro ao carregar vendas");
       setSales([]);
     } finally {
       setIsLoading(false);
@@ -46,7 +54,7 @@ export function useSales({ skip, createdAt }: UseSalesParams): UseProductsReturn
 
   useEffect(() => {
     fetchSales();
-  }, [skip, createdAt]);
+  }, [skip, createdAt, clientName, product]);
 
   return {
     sales,

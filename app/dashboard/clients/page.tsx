@@ -1,7 +1,8 @@
 "use client";
 import { Client } from "@/app/interfaces/client";
 import React, { useState } from "react";
-import ClientCard from "./components/ClientCard";
+import ClientsTable from "./components/ClientsTable";
+import ClientDetailsModal from "./components/ClientDetailsModal";
 import { Pagination } from "@nextui-org/pagination";
 import AddClientModal from "./components/AddClientModal";
 import { MagnifyingGlass } from "phosphor-react";
@@ -14,7 +15,9 @@ export default function ClientsPage() {
   const [skip, setSkip] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [editData, setEditData] = useState<Client | undefined>();
+  const [detailsData, setDetailsData] = useState<Client | undefined>();
   const [pageType, setPageType] = useState<"add" | "edit">();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -32,6 +35,18 @@ export default function ClientsPage() {
     setEditData(clientData);
     setPageType("edit");
     setIsModalOpen(true);
+  };
+
+  const handleOpenDetailsModal = (clientData: Client) => {
+    setDetailsData(clientData);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleEditFromDetails = () => {
+    if (detailsData) {
+      setIsDetailsModalOpen(false);
+      handleOpenEditModal(detailsData);
+    }
   };
 
   const handleDeleteClient = async (clientId: string) => {
@@ -77,33 +92,38 @@ export default function ClientsPage() {
         </button>
       </div>
 
-      {isLoading ? (
-        <div className="flex items-center justify-center h-full">
-          <p className="text-gray-600 text-lg">Carregando clientes...</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full max-h-screen overflow-auto">
-          {clients?.map((client: Client) => (
-            <ClientCard
-              key={client.id}
-              client={client}
-              handleOpenEdit={() => handleOpenEditModal(client)}
-              handleDelete={() => handleDeleteClient(client.id)}
-            />
-          ))}
-        </div>
-      )}
+      <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-600 text-lg">Carregando clientes...</p>
+          </div>
+        ) : (
+          <ClientsTable
+            clients={clients || []}
+            onEdit={handleOpenEditModal}
+            onDelete={handleDeleteClient}
+            onRowClick={handleOpenDetailsModal}
+          />
+        )}
 
-      <div className="mt-4 2xl:mt-0 w-full flex items-center justify-center bg-transparent">
-        <Pagination
-          variant="flat"
-          showControls
-          isDisabled={pages === 1}
-          page={currentPage}
-          total={pages}
-          onChange={(page: number) => handlePageChange(page)}
-        />
+        <div className="w-full flex items-center justify-center bg-transparent">
+          <Pagination
+            variant="flat"
+            showControls
+            isDisabled={pages === 1}
+            page={currentPage}
+            total={pages}
+            onChange={(page: number) => handlePageChange(page)}
+          />
+        </div>
       </div>
+
+      <ClientDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+        client={detailsData}
+        onEdit={handleEditFromDetails}
+      />
 
       <AddClientModal
         pageType={pageType}
