@@ -3,9 +3,21 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { colors } from "@/app/styles/colors";
+import { useNotifications } from "@/app/hooks/useNotifications";
+import NotificationsModal from "@/app/components/NotificationsModal/NotificationsModal";
+import { Package, ShoppingCart } from "phosphor-react";
 
 export default function Header() {
   const [company, setCompany] = useState<any>(null);
+  const [isProductNotificationsOpen, setIsProductNotificationsOpen] = useState(false);
+  const [isSalesNotificationsOpen, setIsSalesNotificationsOpen] = useState(false);
+  const {
+    notificationsProduct,
+    notificationsSales,
+    hasMore,
+    isLoading,
+    loadMore,
+  } = useNotifications();
 
   useEffect(() => {
     // Read company data from cookies on mount
@@ -23,6 +35,21 @@ export default function Header() {
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  const unreadProductCount = notificationsProduct.filter(
+    (notification) => !notification.readed
+  ).length;
+  const unreadSalesCount = notificationsSales.filter(
+    (notification) => !notification.readed
+  ).length;
+
+  const handleLoadMoreProducts = async () => {
+    await loadMore("PRODUCTS");
+  };
+
+  const handleLoadMoreSales = async () => {
+    await loadMore("SALES");
+  };
 
   return (
     <header
@@ -89,24 +116,60 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Optional: User info or additional info can go here */}
+        {/* Notifications */}
         <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p
-              className="text-sm font-medium"
-              style={{ color: colors.graphite }}
-            >
-              Bem-vindo!
-            </p>
-            <p
-              className="text-xs"
-              style={{ color: colors.mediumGray }}
-            >
-              {company?.email || ""}
-            </p>
-          </div>
+          {/* Products Notifications Button */}
+          <button
+            onClick={() => setIsProductNotificationsOpen(true)}
+            className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Notificações de Produtos"
+          >
+            <Package size={24} color={colors.petrolBlue} />
+            {unreadProductCount > 0 && (
+              <div className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {unreadProductCount}
+              </div>
+            )}
+          </button>
+
+          {/* Sales Notifications Button */}
+          <button
+            onClick={() => setIsSalesNotificationsOpen(true)}
+            className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Notificações de Vendas"
+          >
+            <ShoppingCart size={24} color={colors.petrolBlue} />
+            {unreadSalesCount > 0 && (
+              <div className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {unreadSalesCount}
+              </div>
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Notifications Modals */}
+      <NotificationsModal
+        isOpen={isProductNotificationsOpen}
+        onClose={() => setIsProductNotificationsOpen(false)}
+        notifications={notificationsProduct}
+        entity="PRODUCTS"
+        title="Notificações de Produtos"
+        hasMore={hasMore}
+        isLoading={isLoading}
+        onLoadMore={handleLoadMoreProducts}
+      />
+
+      <NotificationsModal
+        isOpen={isSalesNotificationsOpen}
+        onClose={() => setIsSalesNotificationsOpen(false)}
+        notifications={notificationsSales}
+        entity="SALES"
+        title="Notificações de Vendas"
+        hasMore={hasMore}
+        isLoading={isLoading}
+        onLoadMore={handleLoadMoreSales}
+      />
     </header>
   );
 }
