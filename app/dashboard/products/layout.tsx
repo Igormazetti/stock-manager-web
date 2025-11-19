@@ -10,7 +10,7 @@ export default function DashLayout({
   const cookiesData = cookies().get("auth-token");
 
   if (!cookiesData) {
-    redirect("/login");
+    redirect("/");
   }
 
   return <>{children}</>;

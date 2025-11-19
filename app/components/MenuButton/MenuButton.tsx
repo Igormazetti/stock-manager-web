@@ -2,6 +2,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   Package, Money, Users
 } from "phosphor-react";
+import { colors } from "@/app/styles/colors";
 
 interface IMenuButton {
   path: string;
@@ -44,30 +45,48 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
     return pathname.includes(path);
   }
 
-  return (
-    !isOpen ? (
+  return !isOpen ? (
     <button
-    onClick={() => handleClick()}    
-    className={
-      isActive(pathname)
-        ? "bg-blue-600 text-white rounded-md h-10 w-[90%] flex justify-center items-center"
-        : ""
-    }
-  >
-    {getIcon()}
-  </button>
+      onClick={() => handleClick()}
+      className="rounded-md h-10 w-[90%] flex justify-center items-center transition-colors"
+      style={{
+        backgroundColor: isActive(pathname) ? colors.petrolBlue : "transparent",
+        color: isActive(pathname) ? colors.white : colors.petrolBlue,
+      }}
+      onMouseEnter={(e) => {
+        if (!isActive(pathname)) {
+          e.currentTarget.style.backgroundColor = colors.petrolBlueMist;
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive(pathname)) {
+          e.currentTarget.style.backgroundColor = "transparent";
+        }
+      }}
+    >
+      {getIcon()}
+    </button>
   ) : (
     <button
-    onClick={() => handleClick()}    
-    className={
-      isActive(pathname)
-        ? "bg-blue-600 text-white rounded-md h-10 w-[90%] flex justify-center items-center"
-        : ""
-    }
-  >
-    {getButtonText() || ""}
-  </button>
-  )
-)
+      onClick={() => handleClick()}
+      className="rounded-md h-10 w-[90%] flex justify-center items-center transition-colors"
+      style={{
+        backgroundColor: isActive(pathname) ? colors.petrolBlue : "transparent",
+        color: isActive(pathname) ? colors.white : colors.petrolBlue,
+      }}
+      onMouseEnter={(e) => {
+        if (!isActive(pathname)) {
+          e.currentTarget.style.backgroundColor = colors.petrolBlueMist;
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive(pathname)) {
+          e.currentTarget.style.backgroundColor = "transparent";
+        }
+      }}
+    >
+      {getButtonText() || ""}
+    </button>
+  );
 
 }

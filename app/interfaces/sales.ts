@@ -8,6 +8,7 @@ export interface SaleProduct {
   Product: {
     id: string;
     title: string;
+    code?: string;
     value: number;
     description: string;
     quantity: number;

@@ -36,14 +36,14 @@ export default function ClientItem({ client, index, onEdit, onDelete, onRowClick
             className="p-2 hover:bg-blue-100 rounded transition-colors"
             title="Editar cliente"
           >
-            <Pencil size={18} color="blue" />
+            <Pencil size={32} color="blue" />
           </button>
           <button
             onClick={() => onDelete(client.id)}
             className="p-2 hover:bg-red-100 rounded transition-colors"
             title="Excluir cliente"
           >
-            <Trash size={18} color="red" />
+            <Trash size={32} color="red" />
           </button>
         </div>
       </td>

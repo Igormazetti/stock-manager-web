@@ -84,9 +84,16 @@ export default function SalesDetailsModal({ isOpen, onClose, sale }: SalesDetail
                     >
                       {/* Product Header: Name, Unit Price, and Quantity */}
                       <div className="flex justify-between items-center gap-3 mb-2">
-                        <p className="font-medium text-gray-800 text-base flex-1">
-                          {saleProduct.Product.title}
-                        </p>
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-800 text-base">
+                            {saleProduct.Product.title}
+                          </p>
+                          {saleProduct.Product.code && (
+                            <p className="text-xs text-blue-600 font-semibold">
+                              Código: {saleProduct.Product.code}
+                            </p>
+                          )}
+                        </div>
                         <div className="text-center">
                           <p className="text-xs text-gray-600">Preço Unit.</p>
                           <p className="text-sm font-semibold text-gray-800">

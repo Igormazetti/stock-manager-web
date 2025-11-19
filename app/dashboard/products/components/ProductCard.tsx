@@ -94,6 +94,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
       )}
 
       <h3 className="text-gray-800 text-sm font-bold mt-1 mb-1">{product.title}</h3>
+      {product.code && (
+        <p className="text-blue-600 font-semibold text-xs mb-1">Código: {product.code}</p>
+      )}
       <p className="text-gray-600 line-clamp-2 text-xs">{product.description}</p>
       <p
         className={`${product.quantity > 0 ? "text-gray-800" : "text-red-600"} font-semibold text-xs mt-1`}
@@ -101,7 +104,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {product.quantity > 0 ? `Em estoque: ${product.quantity}` : "Fora de estoque"}
       </p>
       <p className="text-gray-800 font-semibold text-xs mt-1">{formatToBRL(product.value)}</p>
-      <p className="text-gray-600 text-xs mt-1">Custo: {formatToBRL(product.originalValue)}</p>
     </div>
   );
 };

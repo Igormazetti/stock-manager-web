@@ -196,7 +196,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                   }}
                 >
                   {clients.map((client) => (
-                    <AutocompleteItem key={client.id} value={client.id}>
+                    <AutocompleteItem key={client.id} value={client.id} className="text-gray-800">
                       {client.name}
                     </AutocompleteItem>
                   ))}
@@ -221,7 +221,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                 }}
               >
                 {products.map((product) => (
-                  <AutocompleteItem key={product.id} value={product.id}>
+                  <AutocompleteItem key={product.id} value={product.id} className="text-gray-800">
                     {product.title}
                   </AutocompleteItem>
                 ))}

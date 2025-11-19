@@ -20,6 +20,7 @@ interface AddProductModalProps {
 
 interface FormData {
   title: string;
+  code?: string;
   value: number;
   originalValue: number;
   description: string;
@@ -29,6 +30,7 @@ interface FormData {
 
 const productSchema = yup.object().shape({
   title: yup.string().required("Título é obrigatório"),
+  code: yup.string(),
   value: yup
     .number()
     .typeError("Insira um valor válido")
@@ -122,6 +124,7 @@ export default function AddProductModal({
   useEffect(() => {
     if (isOpen && pageType === "edit" && product) {
       setValue("title", product.title);
+      setValue("code", product.code || "");
       setValue("description", product.description);
       setValue("value", product.value);
       setValue("originalValue", product.originalValue);
@@ -146,6 +149,13 @@ export default function AddProductModal({
               id="title"
               registration={register("title")}
               error={errors.title?.message}
+            />
+
+            <CustomInput
+              label="Código"
+              id="code"
+              registration={register("code")}
+              error={errors.code?.message}
             />
 
             <CustomInput

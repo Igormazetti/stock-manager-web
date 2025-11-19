@@ -34,6 +34,11 @@ export default function DetailsModal({ isOpen, onClose, product }: AddProductMod
 
         <div className="md:w-1/2 p-4 flex flex-col gap-4">
           <h2 className="text-xl font-semibold text-gray-800">{product?.title}</h2>
+          {product?.code && (
+            <p className="text-gray-600 font-semibold">
+              Código: <span className="text-blue-600">{product.code}</span>
+            </p>
+          )}
           <p className="text-gray-600">{product?.description}</p>
           <p className="text-gray-600 font-bold">Quantidade: {product?.quantity}</p>
           <p className="text-gray-800 font-bold">
