@@ -69,8 +69,10 @@ export default function ClientsPage() {
 
   return (
     <div className="bg-gray-200 w-full h-full p-4 flex flex-col relative">
-      <div className="w-full flex justify-end items-center mb-4">
-        <div className="flex relative mr-4">
+      <div className="w-full flex justify-between items-center mb-4 gap-2">
+        <h1 className="text-3xl font-bold text-gray-800">Clientes</h1>
+        <div className="flex gap-2">
+          <div className="flex relative mr-4">
           <input
             type="text"
             placeholder="Buscar cliente"
@@ -90,6 +92,7 @@ export default function ClientsPage() {
         >
           Adicionar Cliente
         </button>
+        </div>
       </div>
 
       <div className="flex-1 flex flex-col gap-4 overflow-hidden">

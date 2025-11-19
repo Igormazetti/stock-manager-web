@@ -8,6 +8,9 @@ interface UseSalesParams {
   createdAt?: string;
   clientName?: string;
   product?: string;
+  paid?: boolean;
+  paymentTimeStart?: string;
+  paymentTimeEnd?: string;
 }
 
 interface UseProductsReturn {
@@ -18,7 +21,7 @@ interface UseProductsReturn {
   refetch: () => Promise<void>;
 }
 
-export function useSales({ skip, createdAt, clientName, product }: UseSalesParams): UseProductsReturn {
+export function useSales({ skip, createdAt, clientName, product, paid, paymentTimeStart, paymentTimeEnd }: UseSalesParams): UseProductsReturn {
   const [sales, setSales] = useState<Sale[]>([]);
   const [pages, setPages] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +37,9 @@ export function useSales({ skip, createdAt, clientName, product }: UseSalesParam
       if (createdAt) params.append("createdAt", createdAt);
       if (clientName) params.append("clientName", clientName);
       if (product) params.append("product", product);
+      if (paid !== undefined) params.append("paid", paid.toString());
+      if (paymentTimeStart) params.append("paymentTimeStart", paymentTimeStart);
+      if (paymentTimeEnd) params.append("paymentTimeEnd", paymentTimeEnd);
 
       const response = await apiFetch<SaleRequestData>(
         `/sales?${params.toString()}`,
@@ -54,7 +60,7 @@ export function useSales({ skip, createdAt, clientName, product }: UseSalesParam
 
   useEffect(() => {
     fetchSales();
-  }, [skip, createdAt, clientName, product]);
+  }, [skip, createdAt, clientName, product, paid, paymentTimeStart, paymentTimeEnd]);
 
   return {
     sales,

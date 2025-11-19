@@ -21,6 +21,9 @@ export default function SalesPage() {
     clientName: undefined,
     product: undefined,
     createdAt: undefined,
+    paid: undefined,
+    paymentTimeStart: undefined,
+    paymentTimeEnd: undefined,
   });
 
   const { sales, pages, refetch } = useSales({
@@ -28,6 +31,9 @@ export default function SalesPage() {
     clientName: filters.clientName,
     product: filters.product,
     createdAt: filters.createdAt,
+    paid: filters.paid,
+    paymentTimeStart: filters.paymentTimeStart,
+    paymentTimeEnd: filters.paymentTimeEnd,
   });
 
   const handlePageChange = (page: number) => {
@@ -49,6 +55,8 @@ export default function SalesPage() {
   return (
     <div className="bg-gray-200 w-full h-full p-4 flex flex-col relative">
       <div className="w-full flex justify-between items-center mb-4 gap-2">
+        <h1 className="text-3xl font-bold text-gray-800">Vendas</h1>
+        <div className="flex gap-2">
         <button
           onClick={() => setIsFilterModalOpen(true)}
           className="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition duration-200 ease-in-out flex items-center gap-2"
@@ -64,6 +72,7 @@ export default function SalesPage() {
         >
           Adicionar Venda
         </button>
+        </div>
       </div>
 
       <div className="flex items-center justify-center">
@@ -90,6 +99,7 @@ export default function SalesPage() {
         isOpen={isDetailsModalOpen}
         onClose={() => setIsDetailsModalOpen(false)}
         sale={selectedSale}
+        onSaleUpdated={refetch}
       />
 
       <SalesFilterModal

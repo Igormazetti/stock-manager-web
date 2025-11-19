@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import ModalComponent from "@/app/components/Modal/Modal";
 import { ModalBody, ModalHeader } from "@nextui-org/react";
 import toast from "react-hot-toast";
-import { X } from "phosphor-react";
 
 interface SalesFilterModalProps {
   isOpen: boolean;
@@ -16,6 +15,9 @@ export interface SalesFilters {
   clientName?: string;
   product?: string;
   createdAt?: string;
+  paid?: boolean;
+  paymentTimeStart?: string;
+  paymentTimeEnd?: string;
 }
 
 export default function SalesFilterModal({
@@ -27,6 +29,9 @@ export default function SalesFilterModal({
   const [clientName, setClientName] = useState(currentFilters.clientName || "");
   const [product, setProduct] = useState(currentFilters.product || "");
   const [createdAt, setCreatedAt] = useState(currentFilters.createdAt || "");
+  const [paid, setPaid] = useState<boolean | undefined>(currentFilters.paid);
+  const [paymentTimeStart, setPaymentTimeStart] = useState(currentFilters.paymentTimeStart || "");
+  const [paymentTimeEnd, setPaymentTimeEnd] = useState(currentFilters.paymentTimeEnd || "");
 
   const handleClose = () => {
     onClose();
@@ -36,10 +41,16 @@ export default function SalesFilterModal({
     setClientName("");
     setProduct("");
     setCreatedAt("");
+    setPaid(undefined);
+    setPaymentTimeStart("");
+    setPaymentTimeEnd("");
     onApplyFilters({
       clientName: undefined,
       product: undefined,
       createdAt: undefined,
+      paid: undefined,
+      paymentTimeStart: undefined,
+      paymentTimeEnd: undefined,
     });
     toast.success("Filtros resetados!");
     onClose();
@@ -51,6 +62,9 @@ export default function SalesFilterModal({
     if (clientName.trim()) filters.clientName = clientName.trim();
     if (product.trim()) filters.product = product.trim();
     if (createdAt.trim()) filters.createdAt = createdAt.trim();
+    if (paid !== undefined) filters.paid = paid;
+    if (paymentTimeStart.trim()) filters.paymentTimeStart = paymentTimeStart.trim();
+    if (paymentTimeEnd.trim()) filters.paymentTimeEnd = paymentTimeEnd.trim();
 
     onApplyFilters(filters);
     toast.success("Filtros aplicados!");
@@ -58,7 +72,7 @@ export default function SalesFilterModal({
   };
 
   return (
-    <ModalComponent isOpen={isOpen} onClose={handleClose}>
+    <ModalComponent isOpen={isOpen} size="3xl" onClose={handleClose}>
       <>
         <ModalHeader className="flex flex-col gap-1 text-gray-600 w-full text-center">
           Filtros de Vendas
@@ -112,6 +126,60 @@ export default function SalesFilterModal({
               />
               <p className="text-xs text-gray-500 mt-1">
                 Filtra vendas por data específica
+              </p>
+            </div>
+
+            {/* Payment Status Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Status de Pagamento
+              </label>
+              <select
+                value={paid === undefined ? "" : paid ? "true" : "false"}
+                onChange={(e) => {
+                  if (e.target.value === "") setPaid(undefined);
+                  else setPaid(e.target.value === "true");
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Todos</option>
+                <option value="true">Pago</option>
+                <option value="false">Pendente</option>
+              </select>
+              <p className="text-xs text-gray-500 mt-1">
+                Filtra vendas por status de pagamento
+              </p>
+            </div>
+
+            {/* Payment Time Start Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Data de Pagamento - De
+              </label>
+              <input
+                type="date"
+                value={paymentTimeStart}
+                onChange={(e) => setPaymentTimeStart(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Data inicial do período de pagamento
+              </p>
+            </div>
+
+            {/* Payment Time End Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Data de Pagamento - Até
+              </label>
+              <input
+                type="date"
+                value={paymentTimeEnd}
+                onChange={(e) => setPaymentTimeEnd(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Data final do período de pagamento
               </p>
             </div>
 

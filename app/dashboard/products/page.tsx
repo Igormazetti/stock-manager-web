@@ -49,8 +49,10 @@ export default function ProductsPage() {
 
   return (
     <div className="bg-gray-200 w-full h-full p-4 flex flex-col relative">
-      <div className="w-full flex justify-end items-center mb-4">
-        <div className="flex items-center mr-4">
+      <div className="w-full flex justify-between items-center mb-4 gap-2">
+        <h1 className="text-3xl font-bold text-gray-800">Produtos</h1>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center mr-4">
           <label className="mr-2 text-black">Ordenar por:</label>
           <select
             value={filterOption}
@@ -82,6 +84,7 @@ export default function ProductsPage() {
         >
           Adicionar Produto
         </button>
+        </div>
       </div>
 
       {isLoading ? (

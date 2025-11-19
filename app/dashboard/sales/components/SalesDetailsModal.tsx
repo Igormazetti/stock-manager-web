@@ -2,21 +2,47 @@
 import { Sale } from "@/app/interfaces/sales";
 import ModalComponent from "@/app/components/Modal/Modal";
 import { ModalBody, ModalHeader } from "@nextui-org/react";
-import React from "react";
+import React, { useState } from "react";
 import { formatDate } from "@/app/utils/dateFormatter";
+import { apiFetch } from "@/app/shared/requests";
+import toast from "react-hot-toast";
 
 interface SalesDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   sale: Sale | undefined;
+  onSaleUpdated?: () => Promise<void>;
 }
 
-export default function SalesDetailsModal({ isOpen, onClose, sale }: SalesDetailsModalProps) {
+export default function SalesDetailsModal({ isOpen, onClose, sale, onSaleUpdated }: SalesDetailsModalProps) {
   if (!sale) return null;
+
+  const [isPaid, setIsPaid] = useState((sale as any).paid || false);
+  const [paymentTime, setPaymentTime] = useState((sale as any).paymentTime || "");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const clientName = sale.Client?.name || sale.client;
   const discount = (sale as any).discount || 0;
   const subtotal = (sale as any).subtotal || sale.totalValue + discount;
+
+  const handleUpdatePaidStatus = async () => {
+    setIsUpdating(true);
+    try {
+      await apiFetch(`/sales/${sale.id}`, "PATCH", {
+        paid: isPaid,
+        ...(isPaid && paymentTime && { paymentTime }),
+      });
+      toast.success("Status de pagamento atualizado!");
+      if (onSaleUpdated) {
+        await onSaleUpdated();
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Erro ao atualizar status de pagamento");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <ModalComponent isOpen={isOpen} size="3xl" onClose={onClose}>
@@ -69,6 +95,72 @@ export default function SalesDetailsModal({ isOpen, onClose, sale }: SalesDetail
                     </p>
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* Payment Status */}
+            <div className="mb-6 rounded-lg p-5 border-2" style={{ borderColor: isPaid ? '#10b981' : '#f59e0b', backgroundColor: isPaid ? '#f0fdf4' : '#fffbf0' }}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-gray-800">Status de Pagamento</h3>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-bold ${
+                    isPaid
+                      ? "bg-green-100 text-green-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}
+                >
+                  {isPaid ? "✓ PAGO" : "PENDENTE"}
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setIsPaid(true)}
+                    className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-200 border-2 ${
+                      isPaid
+                        ? "bg-green-600 text-white border-green-600"
+                        : "bg-white text-green-600 border-green-300 hover:border-green-600"
+                    }`}
+                  >
+                    ✓ Marcar como Pago
+                  </button>
+                  <button
+                    onClick={() => setIsPaid(false)}
+                    className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-200 border-2 ${
+                      !isPaid
+                        ? "bg-yellow-600 text-white border-yellow-600"
+                        : "bg-white text-yellow-600 border-yellow-300 hover:border-yellow-600"
+                    }`}
+                  >
+                    ✗ Marcar como Não Pago
+                  </button>
+                </div>
+
+                {isPaid && (
+                  <div className="bg-white rounded-lg p-4 border border-green-200">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Data e Hora do Pagamento (Opcional)
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={paymentTime}
+                      onChange={(e) => setPaymentTime(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">
+                      Se deixado em branco, será usado a data e hora atual
+                    </p>
+                  </div>
+                )}
+
+                <button
+                  onClick={handleUpdatePaidStatus}
+                  disabled={isUpdating}
+                  className="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isUpdating ? "Atualizando..." : "Salvar Alterações"}
+                </button>
               </div>
             </div>
 

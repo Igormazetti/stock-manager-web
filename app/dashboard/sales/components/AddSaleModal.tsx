@@ -31,6 +31,8 @@ interface FormData {
   }[];
   discount?: number;
   observation?: string;
+  paid?: boolean;
+  paymentTime?: string;
 }
 
 export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalProps) {
@@ -40,6 +42,8 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
   const [discount, setDiscount] = useState<number>(0);
   const [observation, setObservation] = useState<string>("");
+  const [isPaid, setIsPaid] = useState(false);
+  const [paymentTime, setPaymentTime] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch clients for autocomplete
@@ -63,6 +67,8 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
     setSelectedProducts([]);
     setDiscount(0);
     setObservation("");
+    setIsPaid(false);
+    setPaymentTime("");
   };
 
   const handleSelectClient = (clientId: string) => {
@@ -132,6 +138,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
         })),
         ...(discount > 0 && { discount }),
         ...(observation.trim() && { observation: observation.trim() }),
+        ...(isPaid && { paid: true, paymentTime: paymentTime || new Date().toISOString() }),
       };
 
       await apiFetch("/sales/create", "POST", formData);
@@ -311,6 +318,55 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                   <p className="text-xs text-green-600 mt-1">
                     Desconto de R$ {discount.toFixed(2)} aplicado
                   </p>
+                )}
+              </div>
+            )}
+
+            {/* Payment Status */}
+            {selectedProducts.length > 0 && (
+              <div className="mb-4 rounded-lg p-5 border-2" style={{ borderColor: isPaid ? '#10b981' : '#d1d5db', backgroundColor: isPaid ? '#f0fdf4' : '#f9fafb' }}>
+                <h3 className="font-semibold text-gray-800 mb-3">Status de Pagamento</h3>
+
+                <div className="flex gap-3 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsPaid(true)}
+                    className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-all duration-200 border-2 text-sm ${
+                      isPaid
+                        ? "bg-green-600 text-white border-green-600"
+                        : "bg-white text-green-600 border-green-300 hover:border-green-600"
+                    }`}
+                  >
+                    ✓ Marcar como Pago
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsPaid(false)}
+                    className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-all duration-200 border-2 text-sm ${
+                      !isPaid
+                        ? "bg-yellow-600 text-white border-yellow-600"
+                        : "bg-white text-yellow-600 border-yellow-300 hover:border-yellow-600"
+                    }`}
+                  >
+                    ✗ Marcar como Não Pago
+                  </button>
+                </div>
+
+                {isPaid && (
+                  <div className="bg-white rounded-lg p-3 border border-green-200">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Data e Hora do Pagamento (Opcional)
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={paymentTime}
+                      onChange={(e) => setPaymentTime(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">
+                      Se deixado em branco, será usada a data e hora atual
+                    </p>
+                  </div>
                 )}
               </div>
             )}

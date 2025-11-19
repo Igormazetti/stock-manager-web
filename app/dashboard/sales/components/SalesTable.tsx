@@ -23,6 +23,9 @@ export default function SalesTable({ sales, onClick }: SalesTableProps) {
               <th className="py-3 px-4 border-b border-gray-200 text-start font-semibold text-gray-800 min-w-[150px]">
                 Valor Total
               </th>
+              <th className="py-3 px-4 border-b border-gray-200 text-start font-semibold text-gray-800 min-w-[150px]">
+                Status
+              </th>
               <th className="py-3 px-4 border-b border-gray-200 text-start font-semibold text-gray-800 rounded-tr-[8px] min-w-[150px]">
                 Data
               </th>
@@ -35,7 +38,7 @@ export default function SalesTable({ sales, onClick }: SalesTableProps) {
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="py-8 text-center text-gray-500">
+                <td colSpan={5} className="py-8 text-center text-gray-500">
                   Nenhuma venda encontrada
                 </td>
               </tr>
