@@ -3,6 +3,7 @@ import { Client } from "@/app/interfaces/client";
 import { Product } from "@/app/interfaces/product";
 import { useClients } from "@/app/hooks/useClients";
 import { useProducts } from "@/app/hooks/useProducts";
+import { useNotifications } from "@/app/hooks/useNotifications";
 import { apiFetch } from "@/app/shared/requests";
 import ModalComponent from "@/app/components/Modal/Modal";
 import { ModalBody, ModalHeader, Autocomplete, AutocompleteItem } from "@nextui-org/react";
@@ -45,6 +46,9 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
   const [isPaid, setIsPaid] = useState(false);
   const [paymentTime, setPaymentTime] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Get notifications hook for refresh
+  const { refreshNotifications } = useNotifications();
 
   // Fetch clients for autocomplete
   const { clients } = useClients({
@@ -144,6 +148,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
       await apiFetch("/sales/create", "POST", formData);
       toast.success("Venda criada com sucesso!");
       await refetch();
+      await refreshNotifications();
       handleClose();
     } catch (error) {
       console.log(error);

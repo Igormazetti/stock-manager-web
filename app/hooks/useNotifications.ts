@@ -21,6 +21,7 @@ interface UseNotificationsReturn {
   hasMore: boolean;
   loadMore: (entity: "PRODUCTS" | "SALES") => Promise<void>;
   refetch: () => Promise<void>;
+  refreshNotifications: () => Promise<void>;
 }
 
 export function useNotifications(): UseNotificationsReturn {
@@ -78,6 +79,11 @@ export function useNotifications(): UseNotificationsReturn {
     await fetchNotifications(0);
   }, [fetchNotifications]);
 
+  const refreshNotifications = useCallback(async () => {
+    setSkip(0);
+    await fetchNotifications(0);
+  }, [fetchNotifications]);
+
   useEffect(() => {
     fetchNotifications(0);
   }, []);
@@ -94,5 +100,6 @@ export function useNotifications(): UseNotificationsReturn {
     hasMore,
     loadMore,
     refetch,
+    refreshNotifications,
   };
 }
