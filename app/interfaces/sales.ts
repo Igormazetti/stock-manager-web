@@ -5,6 +5,7 @@ export interface SaleProduct {
   product_id: string;
   sale_id: string;
   quantity_sold: number;
+  productSaleValue?: number;
   Product: {
     id: string;
     title: string;

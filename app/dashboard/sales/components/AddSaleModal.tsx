@@ -22,18 +22,19 @@ interface SelectedProduct {
   productTitle: string;
   quantity: number;
   value: number;
+  productSaleValue: number;
 }
 
 interface FormData {
   clientId: string;
+  paid?: boolean;
+  paymentTime?: string;
+  observation?: string;
   products: {
     id: string;
     quantity: number;
+    productSaleValue: number;
   }[];
-  discount?: number;
-  observation?: string;
-  paid?: boolean;
-  paymentTime?: string;
 }
 
 export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalProps) {
@@ -41,7 +42,6 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [productSearch, setProductSearch] = useState("");
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
-  const [discount, setDiscount] = useState<number>(0);
   const [observation, setObservation] = useState<string>("");
   const [isPaid, setIsPaid] = useState(false);
   const [paymentTime, setPaymentTime] = useState<string>("");
@@ -69,7 +69,6 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
     setSelectedClient(null);
     setProductSearch("");
     setSelectedProducts([]);
-    setDiscount(0);
     setObservation("");
     setIsPaid(false);
     setPaymentTime("");
@@ -99,6 +98,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
           productTitle: product.title,
           quantity: 1,
           value: product.value,
+          productSaleValue: product.value,
         },
       ]);
       setProductSearch("");
@@ -114,6 +114,15 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
     setSelectedProducts(
       selectedProducts.map((p) =>
         p.productId === productId ? { ...p, quantity } : p
+      )
+    );
+  };
+
+  const handlePriceChange = (productId: string, price: number) => {
+    if (price < 0) return;
+    setSelectedProducts(
+      selectedProducts.map((p) =>
+        p.productId === productId ? { ...p, productSaleValue: price } : p
       )
     );
   };
@@ -139,8 +148,8 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
         products: selectedProducts.map((p) => ({
           id: p.productId,
           quantity: p.quantity,
+          productSaleValue: p.productSaleValue,
         })),
-        ...(discount > 0 && { discount }),
         ...(observation.trim() && { observation: observation.trim() }),
         ...(isPaid && { paid: true, paymentTime: paymentTime || new Date().toISOString() }),
       };
@@ -158,17 +167,12 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
     }
   };
 
-  const subtotal = useMemo(
+  const totalValue = useMemo(
     () =>
       selectedProducts.reduce((total, product) => {
-        return total + product.value * product.quantity;
+        return total + product.productSaleValue * product.quantity;
       }, 0),
     [selectedProducts]
-  );
-
-  const totalValue = useMemo(
-    () => Math.max(0, subtotal - discount),
-    [subtotal, discount]
   );
 
   return (
@@ -248,29 +252,17 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                   {selectedProducts.map((product) => (
                     <div
                       key={product.productId}
-                      className="flex items-center justify-between bg-white p-2 rounded border border-gray-200"
+                      className="flex flex-col gap-2 bg-white p-3 rounded border border-gray-200"
                     >
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-800 text-sm">
-                          {product.productTitle}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          R$ {product.value.toFixed(2)} un.
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          min="1"
-                          value={product.quantity}
-                          onChange={(e) =>
-                            handleQuantityChange(
-                              product.productId,
-                              parseInt(e.target.value) || 1
-                            )
-                          }
-                          className="w-12 px-2 py-1 border border-gray-300 rounded text-center text-sm text-gray-800"
-                        />
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-800 text-sm">
+                            {product.productTitle}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Preço original: R$ {product.value.toFixed(2)} un.
+                          </p>
+                        </div>
                         <button
                           type="button"
                           onClick={() => handleRemoveProduct(product.productId)}
@@ -278,6 +270,49 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                         >
                           <X size={18} />
                         </button>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1">
+                          <label className="block text-xs text-gray-600 mb-1">
+                            Preço de Venda (R$)
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={product.productSaleValue}
+                            onChange={(e) =>
+                              handlePriceChange(
+                                product.productId,
+                                parseFloat(e.target.value) || 0
+                              )
+                            }
+                            className="w-full px-2 py-1 border border-gray-300 rounded text-center text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div className="w-20">
+                          <label className="block text-xs text-gray-600 mb-1">
+                            Qtd
+                          </label>
+                          <input
+                            type="number"
+                            min="1"
+                            value={product.quantity}
+                            onChange={(e) =>
+                              handleQuantityChange(
+                                product.productId,
+                                parseInt(e.target.value) || 1
+                              )
+                            }
+                            className="w-full px-2 py-1 border border-gray-300 rounded text-center text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs text-gray-600 mb-1">Total</p>
+                          <p className="font-semibold text-gray-800 text-sm">
+                            R$ {(product.productSaleValue * product.quantity).toFixed(2)}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -301,31 +336,6 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
               </div>
             )}
 
-            {/* Discount */}
-            {selectedProducts.length > 0 && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Desconto (Opcional)
-                </label>
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-600">R$</span>
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={discount}
-                    onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
-                    placeholder="0.00"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                {discount > 0 && (
-                  <p className="text-xs text-green-600 mt-1">
-                    Desconto de R$ {discount.toFixed(2)} aplicado
-                  </p>
-                )}
-              </div>
-            )}
 
             {/* Payment Status */}
             {selectedProducts.length > 0 && (
@@ -376,34 +386,14 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
               </div>
             )}
 
-            {/* Subtotal and Total Value */}
+            {/* Total Value */}
             {selectedProducts.length > 0 && (
-              <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg overflow-hidden">
-                <div className="p-3 border-b border-blue-200">
-                  <div className="flex justify-between">
-                    <p className="text-sm text-gray-700">Subtotal:</p>
-                    <p className="text-sm font-semibold text-gray-800">
-                      R$ {subtotal.toFixed(2)}
-                    </p>
-                  </div>
-                </div>
-                {discount > 0 && (
-                  <div className="p-3 border-b border-blue-200 bg-green-50">
-                    <div className="flex justify-between">
-                      <p className="text-sm text-gray-700">Desconto:</p>
-                      <p className="text-sm font-semibold text-green-600">
-                        -R$ {discount.toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                <div className="p-3">
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm font-semibold text-gray-700">Total:</p>
-                    <p className="text-2xl font-bold text-blue-600">
-                      R$ {totalValue.toFixed(2)}
-                    </p>
-                  </div>
+              <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex justify-between items-center">
+                  <p className="text-sm font-semibold text-gray-700">Total da Venda:</p>
+                  <p className="text-3xl font-bold text-blue-600">
+                    R$ {totalValue.toFixed(2)}
+                  </p>
                 </div>
               </div>
             )}

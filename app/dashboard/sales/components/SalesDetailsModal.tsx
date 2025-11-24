@@ -169,50 +169,73 @@ export default function SalesDetailsModal({ isOpen, onClose, sale, onSaleUpdated
               <h3 className="font-semibold text-gray-800 mb-3">Produtos</h3>
               <div className="space-y-2 max-h-[300px] overflow-y-auto">
                 {sale.Products && sale.Products.length > 0 ? (
-                  sale.Products.map((saleProduct) => (
-                    <div
-                      key={saleProduct.id}
-                      className="bg-white p-4 rounded border border-gray-200"
-                    >
-                      {/* Product Header: Name, Unit Price, and Quantity */}
-                      <div className="flex justify-between items-center gap-3 mb-2">
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-800 text-base">
-                            {saleProduct.Product.title}
-                          </p>
-                          {saleProduct.Product.code && (
-                            <p className="text-xs text-blue-600 font-semibold">
-                              Código: {saleProduct.Product.code}
+                  sale.Products.map((saleProduct) => {
+                    const salePrice = saleProduct.productSaleValue ?? saleProduct.Product.value;
+                    const priceChanged = saleProduct.productSaleValue && saleProduct.productSaleValue !== saleProduct.Product.value;
+                    return (
+                      <div
+                        key={saleProduct.id}
+                        className="bg-white p-4 rounded border border-gray-200"
+                      >
+                        {/* Product Header: Name and Quantity */}
+                        <div className="flex justify-between items-start gap-3 mb-3">
+                          <div className="flex-1">
+                            <p className="font-medium text-gray-800 text-base">
+                              {saleProduct.Product.title}
                             </p>
-                          )}
+                            {saleProduct.Product.code && (
+                              <p className="text-xs text-blue-600 font-semibold">
+                                Código: {saleProduct.Product.code}
+                              </p>
+                            )}
+                          </div>
+                          <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap">
+                            {saleProduct.quantity_sold} un.
+                          </span>
                         </div>
-                        <div className="text-center">
-                          <p className="text-xs text-gray-600">Preço Unit.</p>
-                          <p className="text-sm font-semibold text-gray-800">
-                            R$ {saleProduct.Product.value.toFixed(2)}
-                          </p>
-                        </div>
-                        <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap">
-                          {saleProduct.quantity_sold} un.
-                        </span>
-                      </div>
 
-                      {/* Product Description */}
-                      <p className="text-sm text-gray-500 mb-3">
-                        {saleProduct.Product.description}
-                      </p>
+                        {/* Product Description */}
+                        <p className="text-sm text-gray-500 mb-3">
+                          {saleProduct.Product.description}
+                        </p>
 
-                      {/* Subtotal */}
-                      <div className="flex justify-end items-end gap-3 pt-3 border-t border-gray-100">
-                        <div className="text-right">
-                          <p className="text-xs text-gray-600 mb-1">Subtotal</p>
-                          <p className="text-lg font-bold text-blue-600">
-                            R$ {(saleProduct.Product.value * saleProduct.quantity_sold).toFixed(2)}
-                          </p>
+                        {/* Price Information */}
+                        <div className="bg-gray-50 p-3 rounded mb-3 border border-gray-100">
+                          <div className="flex justify-between items-center gap-4">
+                            <div>
+                              <p className="text-xs text-gray-600 mb-1">Preço Original</p>
+                              <p className="text-sm font-semibold text-gray-800">
+                                R$ {saleProduct.Product.value.toFixed(2)}
+                              </p>
+                            </div>
+                            <div className={priceChanged ? "border-l-2 border-yellow-400 pl-4" : ""}>
+                              <p className="text-xs text-gray-600 mb-1">Preço de Venda</p>
+                              <p className={`text-sm font-semibold ${priceChanged ? "text-yellow-600" : "text-gray-800"}`}>
+                                R$ {salePrice.toFixed(2)}
+                              </p>
+                              {priceChanged && (
+                                <p className={`text-xs mt-1 font-semibold ${salePrice > saleProduct.Product.value ? "text-red-600" : "text-green-600"}`}>
+                                  {salePrice > saleProduct.Product.value
+                                    ? `+R$ ${(salePrice - saleProduct.Product.value).toFixed(2)}`
+                                    : `-R$ ${(saleProduct.Product.value - salePrice).toFixed(2)}`}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Subtotal */}
+                        <div className="flex justify-end items-end gap-3 pt-3 border-t border-gray-100">
+                          <div className="text-right">
+                            <p className="text-xs text-gray-600 mb-1">Subtotal</p>
+                            <p className="text-lg font-bold text-blue-600">
+                              R$ {(salePrice * saleProduct.quantity_sold).toFixed(2)}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
                   <p className="text-center text-gray-500 py-4">Nenhum produto nesta venda</p>
                 )}
