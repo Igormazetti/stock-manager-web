@@ -43,7 +43,7 @@ export function useNotifications(): UseNotificationsReturn {
         "GET"
       );
 
-      const allNotifications = response.data || [];
+      const allNotifications = Array.isArray(response.data) ? response.data : [];
       const productNotifications = allNotifications.filter((notification) => notification.entity === "PRODUCTS");
       const salesNotifications = allNotifications.filter((notification) => notification.entity === "SALES");
 
@@ -61,7 +61,6 @@ export function useNotifications(): UseNotificationsReturn {
       const error = err as Error;
       setError(error);
       console.log(error);
-      toast.error("Erro ao carregar notificações");
     } finally {
       setIsLoading(false);
     }
