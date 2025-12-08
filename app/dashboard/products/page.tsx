@@ -53,37 +53,37 @@ export default function ProductsPage() {
         <h1 className="text-3xl font-bold text-gray-800">Produtos</h1>
         <div className="flex items-center gap-4">
           <div className="flex items-center mr-4">
-          <label className="mr-2 text-black">Ordenar por:</label>
-          <select
-            value={filterOption}
-            onChange={(e) => setFilterOption(e.target.value)}
-            className="border rounded-lg p-2 text-gray-600 hover:cursor-pointer"
-          >
-            <option value="menor">Menor estoque</option>
-            <option value="maior">Maior estoque</option>
-            <option value="sem">Sem estoque</option>
-          </select>
-        </div>
-        <div className="flex relative">
-          <input
-            type="text"
-            placeholder="Buscar produto"
-            className="border rounded-lg p-2 mr-4 text-black"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <MagnifyingGlass className="absolute right-6 top-2" size={26} color="gray" />
-        </div>
+            <label className="mr-2 text-black">Ordenar por:</label>
+            <select
+              value={filterOption}
+              onChange={(e) => setFilterOption(e.target.value)}
+              className="border rounded-lg p-2 text-gray-600 hover:cursor-pointer"
+            >
+              <option value="menor">Menor estoque</option>
+              <option value="maior">Maior estoque</option>
+              <option value="sem">Sem estoque</option>
+            </select>
+          </div>
+          <div className="flex relative">
+            <input
+              type="text"
+              placeholder="Buscar produto"
+              className="border rounded-lg p-2 mr-4 text-black"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <MagnifyingGlass className="absolute right-6 top-2" size={26} color="gray" />
+          </div>
 
-        <button
-          onClick={() => {
-            setPageType("add");
-            setIsModalOpen(true);
-          }}
-          className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out"
-        >
-          Adicionar Produto
-        </button>
+          <button
+            onClick={() => {
+              setPageType("add");
+              setIsModalOpen(true);
+            }}
+            className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out"
+          >
+            Adicionar Produto
+          </button>
         </div>
       </div>
 

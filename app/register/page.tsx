@@ -4,28 +4,36 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMemo, useState } from "react";
 import { useWindowSize } from "@uidotdev/usehooks";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Spinner } from "@nextui-org/spinner";
 import Link from "next/link";
 
-interface FormData {
+interface RegisterFormData {
+  name: string;
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
-const loginSchema = yup.object().shape({
+const registerSchema = yup.object().shape({
+  name: yup
+    .string()
+    .min(3, "Nome deve ter ao menos 3 caracteres")
+    .required("Nome da empresa é obrigatório"),
   email: yup.string().email("Insira um email válido").required("Email é obrigatório"),
   password: yup
     .string()
     .min(6, "Senha deve ter ao menos 6 caracteres")
-    .required("Insira uma senha"),
+    .required("Senha é obrigatória"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password")], "As senhas devem ser iguais")
+    .required("Confirmação de senha é obrigatória"),
 });
 
-export default function Home() {
+export default function RegisterPage() {
   const size = useWindowSize();
-
   const [loading, setLoading] = useState(false);
 
   const isMobile = useMemo(() => {
@@ -40,28 +48,41 @@ export default function Home() {
   const {
     register,
     handleSubmit,
-    // reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(loginSchema),
+    resolver: yupResolver(registerSchema),
   });
 
-  const onSubmitHandler: SubmitHandler<FormData> = async (data) => {
+  const onSubmitHandler: SubmitHandler<RegisterFormData> = async (data) => {
     setLoading(true);
-    const login = await signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: false,
-    });
 
-    if (login?.error) {
-      toast.error("Login ou senha inválidos");
+    try {
+      const response = await fetch("http://localhost:6060/company", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success("Empresa registrada com sucesso! Faça login para continuar.");
+        router.push("/");
+      } else {
+        toast.error(result.message || "Erro ao registrar empresa");
+      }
+    } catch (error) {
+      console.error("Erro ao registrar empresa:", error);
+      toast.error("Erro ao registrar empresa. Tente novamente.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.replace("/dashboard/products");
-    setLoading(false);
   };
 
   return (
@@ -69,10 +90,24 @@ export default function Home() {
       <div
         className={`flex flex-col justify-center items-center text-gray-800 rounded-2xl shadow-md ${
           isMobile ? "w-[360px] p-4" : "w-[500px]"
-        } h-[400px]`}
+        } min-h-[500px] py-8`}
       >
-        <p className="font-bold text-xl mb-12">Stock Manager Login</p>
+        <p className="font-bold text-xl mb-8">Registrar Nova Empresa</p>
         <form onSubmit={handleSubmit(onSubmitHandler)} className="w-full max-w-sm">
+          <div className="mb-4">
+            <label htmlFor="name" className="block text-sm font-medium mb-1">
+              Nome da Empresa
+            </label>
+            <input
+              id="name"
+              type="text"
+              className="border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2 rounded-md"
+              {...register("name")}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+            )}
+          </div>
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium mb-1">
               Email
@@ -87,7 +122,7 @@ export default function Home() {
               <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
             )}
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium mb-1">
               Senha
             </label>
@@ -101,6 +136,20 @@ export default function Home() {
               <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
             )}
           </div>
+          <div className="mb-6">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
+              Confirmar Senha
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              className="border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2 rounded-md"
+              {...register("confirmPassword")}
+            />
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>
+            )}
+          </div>
           {loading ? (
             <div className="flex items-center justify-center w-full">
               <Spinner size="sm" />
@@ -110,15 +159,15 @@ export default function Home() {
               type="submit"
               className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 w-full"
             >
-              Login
+              Registrar
             </button>
           )}
         </form>
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
-            Não tem uma conta?{" "}
-            <Link href="/register" className="text-blue-500 hover:text-blue-600 font-medium">
-              Registre sua empresa
+            Já tem uma conta?{" "}
+            <Link href="/" className="text-blue-500 hover:text-blue-600 font-medium">
+              Fazer login
             </Link>
           </p>
         </div>
