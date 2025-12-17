@@ -11,10 +11,7 @@ interface ResetPasswordModalProps {
   onClose: () => void;
 }
 
-export default function ResetPasswordModal({
-  isOpen,
-  onClose,
-}: ResetPasswordModalProps) {
+export default function ResetPasswordModal({ isOpen, onClose }: ResetPasswordModalProps) {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -96,11 +93,7 @@ export default function ResetPasswordModal({
                   onClick={() => setShowOldPassword(!showOldPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                 >
-                  {showOldPassword ? (
-                    <EyeSlash size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
+                  {showOldPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
@@ -123,16 +116,10 @@ export default function ResetPasswordModal({
                   onClick={() => setShowNewPassword(!showNewPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                 >
-                  {showNewPassword ? (
-                    <EyeSlash size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
+                  {showNewPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
                 </button>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Mínimo 6 caracteres
-              </p>
+              <p className="text-xs text-gray-500 mt-1">Mínimo 6 caracteres</p>
             </div>
 
             {/* Confirm Password */}
@@ -153,11 +140,7 @@ export default function ResetPasswordModal({
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                 >
-                  {showConfirmPassword ? (
-                    <EyeSlash size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
+                  {showConfirmPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>

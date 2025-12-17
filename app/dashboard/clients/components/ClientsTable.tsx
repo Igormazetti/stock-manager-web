@@ -9,7 +9,12 @@ type ClientsTableProps = {
   onRowClick: (client: Client) => void;
 };
 
-export default function ClientsTable({ clients, onEdit, onDelete, onRowClick }: ClientsTableProps) {
+export default function ClientsTable({
+  clients,
+  onEdit,
+  onDelete,
+  onRowClick,
+}: ClientsTableProps) {
   return (
     <div className="w-full flex-1 overflow-hidden rounded-[8px] flex flex-col">
       <div className="overflow-x-auto overflow-y-auto flex-1">

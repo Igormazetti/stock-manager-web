@@ -27,10 +27,7 @@ interface FormData {
 
 const clientSchema = yup.object().shape({
   name: yup.string().required("Nome é obrigatório"),
-  email: yup
-    .string()
-    .email("Insira um email válido")
-    .required("Email é obrigatório"),
+  email: yup.string().email("Insira um email válido").required("Email é obrigatório"),
   address: yup.string().required("Endereço é obrigatório"),
   observations: yup.string().optional(),
 });
@@ -40,7 +37,7 @@ export default function AddClientModal({
   onClose,
   pageType,
   client,
-  refetch
+  refetch,
 }: AddClientModalProps) {
   const cookiesData = Cookies.get("company");
 
@@ -78,7 +75,7 @@ export default function AddClientModal({
         await refetch();
 
         handleClose();
-      } catch (error) {
+      } catch {
         toast.error("Erro ao editar cliente!");
       }
 
@@ -96,7 +93,7 @@ export default function AddClientModal({
 
       handleClose();
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error("Erro ao salvar cliente!");
     }
   };
@@ -111,7 +108,6 @@ export default function AddClientModal({
       reset();
     }
   }, [isOpen, pageType, client, setValue, reset]);
-
 
   return (
     <ModalComponent isOpen={isOpen} onClose={handleClose}>

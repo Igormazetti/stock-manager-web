@@ -6,7 +6,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 console.log(apiUrl);
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     Credentials({
       name: "credentials",
@@ -14,26 +14,26 @@ export const authOptions: NextAuthOptions = {
         email: { label: "email", type: "text" },
         password: { label: "password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         try {
           const response = await fetch("http://localhost:6060/company/login", {
             method: "POST",
             headers: {
-              "Content-type": "application/json",
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               email: credentials?.email,
               password: credentials?.password,
             }),
-          }).then((response) => response.json());
+          }).then((res) => res.json());
 
           if (response.token && response.company) {
-            cookies().set("auth-token", response.token);
-            cookies().set("company", JSON.stringify(response.company));
+            const cookieStore = await cookies();
+            cookieStore.set("auth-token", response.token);
+            cookieStore.set("company", JSON.stringify(response.company));
             return response;
           }
 
-          console.error(response.errorMessage);
           return null;
         } catch (error) {
           console.error("Erro ao autenticar:", error);
@@ -48,5 +48,4 @@ export const authOptions: NextAuthOptions = {
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };

@@ -117,7 +117,10 @@ export default function Home() {
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
             Não tem uma conta?{" "}
-            <Link href="/register" className="text-blue-500 hover:text-blue-600 font-medium">
+            <Link
+              href="/register"
+              className="text-blue-500 hover:text-blue-600 font-medium"
+            >
               Registre sua empresa
             </Link>
           </p>

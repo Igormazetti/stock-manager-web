@@ -1,12 +1,16 @@
 "use client";
 import { Client } from "@/app/interfaces/client";
-import { Product } from "@/app/interfaces/product";
 import { useClients } from "@/app/hooks/useClients";
 import { useProducts } from "@/app/hooks/useProducts";
 import { useNotifications } from "@/app/hooks/useNotifications";
 import { apiFetch } from "@/app/shared/requests";
 import ModalComponent from "@/app/components/Modal/Modal";
-import { ModalBody, ModalHeader, Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import {
+  ModalBody,
+  ModalHeader,
+  Autocomplete,
+  AutocompleteItem,
+} from "@nextui-org/react";
 import React, { useState, useMemo } from "react";
 import toast from "react-hot-toast";
 import { X } from "phosphor-react";
@@ -112,9 +116,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
   const handleQuantityChange = (productId: string, quantity: number) => {
     if (quantity <= 0) return;
     setSelectedProducts(
-      selectedProducts.map((p) =>
-        p.productId === productId ? { ...p, quantity } : p
-      )
+      selectedProducts.map((p) => (p.productId === productId ? { ...p, quantity } : p)),
     );
   };
 
@@ -122,8 +124,8 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
     if (price < 0) return;
     setSelectedProducts(
       selectedProducts.map((p) =>
-        p.productId === productId ? { ...p, productSaleValue: price } : p
-      )
+        p.productId === productId ? { ...p, productSaleValue: price } : p,
+      ),
     );
   };
 
@@ -151,7 +153,10 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
           productSaleValue: p.productSaleValue,
         })),
         ...(observation.trim() && { observation: observation.trim() }),
-        ...(isPaid && { paid: true, paymentTime: paymentTime || new Date().toISOString() }),
+        ...(isPaid && {
+          paid: true,
+          paymentTime: paymentTime || new Date().toISOString(),
+        }),
       };
 
       await apiFetch("/sales/create", "POST", formData);
@@ -172,7 +177,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
       selectedProducts.reduce((total, product) => {
         return total + product.productSaleValue * product.quantity;
       }, 0),
-    [selectedProducts]
+    [selectedProducts],
   );
 
   return (
@@ -212,7 +217,11 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                   }}
                 >
                   {clients.map((client) => (
-                    <AutocompleteItem key={client.id} value={client.id} className="text-gray-800">
+                    <AutocompleteItem
+                      key={client.id}
+                      value={client.id}
+                      className="text-gray-800"
+                    >
                       {client.name}
                     </AutocompleteItem>
                   ))}
@@ -237,7 +246,11 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                 }}
               >
                 {products.map((product) => (
-                  <AutocompleteItem key={product.id} value={product.id} className="text-gray-800">
+                  <AutocompleteItem
+                    key={product.id}
+                    value={product.id}
+                    className="text-gray-800"
+                  >
                     {product.title}
                   </AutocompleteItem>
                 ))}
@@ -247,7 +260,9 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
             {/* Selected Products List */}
             {selectedProducts.length > 0 && (
               <div className="mb-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <h3 className="font-semibold text-gray-800 mb-3">Produtos Selecionados</h3>
+                <h3 className="font-semibold text-gray-800 mb-3">
+                  Produtos Selecionados
+                </h3>
                 <div className="space-y-3 max-h-[300px] overflow-y-auto">
                   {selectedProducts.map((product) => (
                     <div
@@ -284,16 +299,14 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                             onChange={(e) =>
                               handlePriceChange(
                                 product.productId,
-                                parseFloat(e.target.value) || 0
+                                parseFloat(e.target.value) || 0,
                               )
                             }
                             className="w-full px-2 py-1 border border-gray-300 rounded text-center text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                         </div>
                         <div className="w-20">
-                          <label className="block text-xs text-gray-600 mb-1">
-                            Qtd
-                          </label>
+                          <label className="block text-xs text-gray-600 mb-1">Qtd</label>
                           <input
                             type="number"
                             min="1"
@@ -301,7 +314,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                             onChange={(e) =>
                               handleQuantityChange(
                                 product.productId,
-                                parseInt(e.target.value) || 1
+                                parseInt(e.target.value) || 1,
                               )
                             }
                             className="w-full px-2 py-1 border border-gray-300 rounded text-center text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -336,10 +349,15 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
               </div>
             )}
 
-
             {/* Payment Status */}
             {selectedProducts.length > 0 && (
-              <div className="mb-4 rounded-lg p-5 border-2" style={{ borderColor: isPaid ? '#10b981' : '#d1d5db', backgroundColor: isPaid ? '#f0fdf4' : '#f9fafb' }}>
+              <div
+                className="mb-4 rounded-lg p-5 border-2"
+                style={{
+                  borderColor: isPaid ? "#10b981" : "#d1d5db",
+                  backgroundColor: isPaid ? "#f0fdf4" : "#f9fafb",
+                }}
+              >
                 <h3 className="font-semibold text-gray-800 mb-3">Status de Pagamento</h3>
 
                 <div className="flex gap-3 mb-4">

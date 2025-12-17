@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import ModalComponent from "@/app/components/Modal/Modal";
 import { ModalBody, ModalHeader } from "@nextui-org/react";
-import CustomInput from "@/app/components/Form/Input";
 import toast from "react-hot-toast";
 import { apiFetch } from "@/app/shared/requests";
 import Cookies from "js-cookie";
@@ -27,10 +26,7 @@ interface UpdateCompanyResponse {
   statusText: string;
 }
 
-export default function EditCompanyModal({
-  isOpen,
-  onClose,
-}: EditCompanyModalProps) {
+export default function EditCompanyModal({ isOpen, onClose }: EditCompanyModalProps) {
   const [companyName, setCompanyName] = useState("");
   const [companyEmail, setCompanyEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);

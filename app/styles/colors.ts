@@ -65,12 +65,9 @@ export const colorClasses = {
   // Buttons
   btnPrimary:
     "bg-[#FF6F61] text-white hover:bg-[#FF867A] active:bg-[#E85A4F] disabled:bg-[#FFC4BF]",
-  btnSecondary:
-    "bg-[#1D5F6F] text-white hover:bg-[#327A8A] active:bg-[#14434D]",
-  btnTertiary:
-    "bg-transparent text-[#1D5F6F] border border-[#1D5F6F] hover:bg-[#F0F7F8]",
-  btnDanger:
-    "bg-[#D72638] text-white hover:bg-[#F83B4A] active:bg-[#B01E2D]",
+  btnSecondary: "bg-[#1D5F6F] text-white hover:bg-[#327A8A] active:bg-[#14434D]",
+  btnTertiary: "bg-transparent text-[#1D5F6F] border border-[#1D5F6F] hover:bg-[#F0F7F8]",
+  btnDanger: "bg-[#D72638] text-white hover:bg-[#F83B4A] active:bg-[#B01E2D]",
 
   // States
   borderColor: "border-[#DCDCDC]",

@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  CaretLeft,
-  CaretRight,
-  Money,
-  Package,
-  SignOut,
-  Users,
-  Gear,
-} from "phosphor-react";
+import { CaretLeft, CaretRight, SignOut, Gear } from "phosphor-react";
 import { usePathname, useRouter } from "next/navigation";
 import MenuButton from "../MenuButton/MenuButton";
 import Cookies from "js-cookie";
@@ -36,11 +28,7 @@ export default function Menu() {
           className="absolute top-4 right-0 rounded-full z-50"
           style={{ color: colors.petrolBlue }}
         >
-          {isOpen ? (
-            <CaretLeft size={24} />
-          ) : (
-            <CaretRight size={24} />
-          )}
+          {isOpen ? <CaretLeft size={24} /> : <CaretRight size={24} />}
         </button>
         <div
           className={`flex flex-col items-center h-full transition-opacity duration-300 gap-4 `}
@@ -59,7 +47,7 @@ export default function Menu() {
           <MenuButton path="sales" isOpen={isOpen} />
 
           {/* Clientes */}
-          <MenuButton path="clients" isOpen={isOpen} />        
+          <MenuButton path="clients" isOpen={isOpen} />
 
           {/* {isOpen ? (
             <button
@@ -128,9 +116,7 @@ export default function Menu() {
                   backgroundColor: pathname.includes("settings")
                     ? colors.petrolBlue
                     : "transparent",
-                  color: pathname.includes("settings")
-                    ? colors.white
-                    : colors.petrolBlue,
+                  color: pathname.includes("settings") ? colors.white : colors.petrolBlue,
                 }}
                 onMouseEnter={(e) => {
                   if (!pathname.includes("settings")) {
@@ -158,9 +144,7 @@ export default function Menu() {
                   backgroundColor: pathname.includes("settings")
                     ? colors.petrolBlue
                     : "transparent",
-                  color: pathname.includes("settings")
-                    ? colors.white
-                    : colors.petrolBlue,
+                  color: pathname.includes("settings") ? colors.white : colors.petrolBlue,
                 }}
                 onMouseEnter={(e) => {
                   if (!pathname.includes("settings")) {
@@ -184,10 +168,7 @@ export default function Menu() {
                 Cookies.remove("company");
                 // Clear any other auth-related cookies
                 Object.keys(Cookies.get()).forEach((cookieName) => {
-                  if (
-                    cookieName.includes("auth") ||
-                    cookieName.includes("session")
-                  ) {
+                  if (cookieName.includes("auth") || cookieName.includes("session")) {
                     Cookies.remove(cookieName);
                   }
                 });

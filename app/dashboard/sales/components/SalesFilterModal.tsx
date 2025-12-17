@@ -7,7 +7,8 @@ import toast from "react-hot-toast";
 interface SalesFilterModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onApplyFilters: (filters: SalesFilters) => void;
+  // eslint-disable-next-line no-unused-vars
+  onApplyFilters: (appliedFilters: SalesFilters) => void;
   currentFilters: SalesFilters;
 }
 
@@ -30,8 +31,12 @@ export default function SalesFilterModal({
   const [product, setProduct] = useState(currentFilters.product || "");
   const [createdAt, setCreatedAt] = useState(currentFilters.createdAt || "");
   const [paid, setPaid] = useState<boolean | undefined>(currentFilters.paid);
-  const [paymentTimeStart, setPaymentTimeStart] = useState(currentFilters.paymentTimeStart || "");
-  const [paymentTimeEnd, setPaymentTimeEnd] = useState(currentFilters.paymentTimeEnd || "");
+  const [paymentTimeStart, setPaymentTimeStart] = useState(
+    currentFilters.paymentTimeStart || "",
+  );
+  const [paymentTimeEnd, setPaymentTimeEnd] = useState(
+    currentFilters.paymentTimeEnd || "",
+  );
 
   const handleClose = () => {
     onClose();
@@ -57,16 +62,17 @@ export default function SalesFilterModal({
   };
 
   const handleApply = () => {
-    const filters: SalesFilters = {};
+    const appliedFilters: SalesFilters = {};
 
-    if (clientName.trim()) filters.clientName = clientName.trim();
-    if (product.trim()) filters.product = product.trim();
-    if (createdAt.trim()) filters.createdAt = createdAt.trim();
-    if (paid !== undefined) filters.paid = paid;
-    if (paymentTimeStart.trim()) filters.paymentTimeStart = paymentTimeStart.trim();
-    if (paymentTimeEnd.trim()) filters.paymentTimeEnd = paymentTimeEnd.trim();
+    if (clientName.trim()) appliedFilters.clientName = clientName.trim();
+    if (product.trim()) appliedFilters.product = product.trim();
+    if (createdAt.trim()) appliedFilters.createdAt = createdAt.trim();
+    if (paid !== undefined) appliedFilters.paid = paid;
+    if (paymentTimeStart.trim())
+      appliedFilters.paymentTimeStart = paymentTimeStart.trim();
+    if (paymentTimeEnd.trim()) appliedFilters.paymentTimeEnd = paymentTimeEnd.trim();
 
-    onApplyFilters(filters);
+    onApplyFilters(appliedFilters);
     toast.success("Filtros aplicados!");
     onClose();
   };
@@ -115,9 +121,7 @@ export default function SalesFilterModal({
 
             {/* Date Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Data
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Data</label>
               <input
                 type="date"
                 value={createdAt}

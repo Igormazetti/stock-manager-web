@@ -38,23 +38,17 @@ export default function ClientDetailsModal({
         <ModalBody className="text-gray-500">
           <div className="w-full max-w-sm pb-4 space-y-4">
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-gray-800">
-                Nome
-              </label>
+              <label className="block text-sm font-bold text-gray-800">Nome</label>
               <p className="text-gray-800 font-medium">{client?.name}</p>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-gray-800">
-                Email
-              </label>
+              <label className="block text-sm font-bold text-gray-800">Email</label>
               <p className="text-gray-800 font-medium">{client?.email}</p>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-gray-800">
-                Endereço
-              </label>
+              <label className="block text-sm font-bold text-gray-800">Endereço</label>
               <p className="text-gray-800 font-medium">{client?.address}</p>
             </div>
 
@@ -69,9 +63,7 @@ export default function ClientDetailsModal({
 
             {client?.createdAt && (
               <div className="space-y-2 pt-4 border-t border-gray-200">
-                <label className="block text-xs font-bold text-gray-700">
-                  Criado em
-                </label>
+                <label className="block text-xs font-bold text-gray-700">Criado em</label>
                 <p className="text-gray-600 text-sm">
                   {new Date(client.createdAt).toLocaleDateString("pt-BR")}
                 </p>

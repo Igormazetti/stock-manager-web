@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { apiFetch } from "@/app/shared/requests";
-import toast from "react-hot-toast";
 
 export interface Notification {
   id: string;
@@ -19,7 +18,7 @@ interface UseNotificationsReturn {
   isLoading: boolean;
   error: Error | null;
   hasMore: boolean;
-  loadMore: (entity: "PRODUCTS" | "SALES") => Promise<void>;
+  loadMore: () => Promise<void>;
   refetch: () => Promise<void>;
   refreshNotifications: () => Promise<void>;
 }
@@ -40,19 +39,29 @@ export function useNotifications(): UseNotificationsReturn {
     try {
       const response = await apiFetch<{ data: Notification[]; totalCount: number }>(
         `/notifications?skip=${offset}&take=${TAKE}`,
-        "GET"
+        "GET",
       );
 
       const allNotifications = Array.isArray(response.data) ? response.data : [];
-      const productNotifications = allNotifications.filter((notification) => notification.entity === "PRODUCTS");
-      const salesNotifications = allNotifications.filter((notification) => notification.entity === "SALES");
+      const productNotifications = allNotifications.filter(
+        (notification) => notification.entity === "PRODUCTS",
+      );
+      const salesNotifications = allNotifications.filter(
+        (notification) => notification.entity === "SALES",
+      );
 
       if (offset === 0) {
         setNotificationsProduct(productNotifications);
         setNotificationsSales(salesNotifications);
       } else {
-        setNotificationsProduct((previousNotifications) => [...previousNotifications, ...productNotifications]);
-        setNotificationsSales((previousNotifications) => [...previousNotifications, ...salesNotifications]);
+        setNotificationsProduct((previousNotifications) => [
+          ...previousNotifications,
+          ...productNotifications,
+        ]);
+        setNotificationsSales((previousNotifications) => [
+          ...previousNotifications,
+          ...salesNotifications,
+        ]);
       }
 
       setTotalCount(response.totalCount || 0);
@@ -66,12 +75,9 @@ export function useNotifications(): UseNotificationsReturn {
     }
   }, []);
 
-  const loadMore = useCallback(
-    async (entity: "PRODUCTS" | "SALES") => {
-      await fetchNotifications(skip);
-    },
-    [skip, fetchNotifications]
-  );
+  const loadMore = useCallback(async () => {
+    await fetchNotifications(skip);
+  }, [skip, fetchNotifications]);
 
   const refetch = useCallback(async () => {
     setSkip(0);
@@ -85,10 +91,10 @@ export function useNotifications(): UseNotificationsReturn {
 
   useEffect(() => {
     fetchNotifications(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const hasMore =
-    (notificationsProduct.length + notificationsSales.length) < totalCount;
+  const hasMore = notificationsProduct.length + notificationsSales.length < totalCount;
 
   return {
     notificationsProduct,

@@ -9,7 +9,6 @@ interface NotificationsModalProps {
   isOpen: boolean;
   onClose: () => void;
   notifications: Notification[];
-  entity: "PRODUCTS" | "SALES";
   title: string;
   hasMore: boolean;
   isLoading: boolean;
@@ -20,7 +19,6 @@ export default function NotificationsModal({
   isOpen,
   onClose,
   notifications,
-  entity,
   title,
   hasMore,
   isLoading,
@@ -55,7 +53,7 @@ export default function NotificationsModal({
   }, [handleScroll]);
 
   const unreadsCount = notifications.filter(
-    (notification) => !notification.readed
+    (notification) => !notification.readed,
   ).length;
 
   return (
@@ -64,16 +62,11 @@ export default function NotificationsModal({
         <ModalHeader className="flex flex-col gap-1 text-gray-600 w-full text-center">
           {title}
           {unreadsCount > 0 && (
-            <span className="text-sm text-red-600">
-              ({unreadsCount} não lidas)
-            </span>
+            <span className="text-sm text-red-600">({unreadsCount} não lidas)</span>
           )}
         </ModalHeader>
         <ModalBody className="text-gray-500 min-h-[60vh] max-h-[80vh] overflow-hidden p-0">
-          <div
-            ref={scrollContainerRef}
-            className="h-full overflow-y-auto flex flex-col"
-          >
+          <div ref={scrollContainerRef} className="h-full overflow-y-auto flex flex-col">
             {notifications.length === 0 ? (
               <div className="flex items-center justify-center flex-1 text-gray-500">
                 Nenhuma notificação

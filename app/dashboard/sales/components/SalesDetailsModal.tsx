@@ -14,12 +14,17 @@ interface SalesDetailsModalProps {
   onSaleUpdated?: () => Promise<void>;
 }
 
-export default function SalesDetailsModal({ isOpen, onClose, sale, onSaleUpdated }: SalesDetailsModalProps) {
-  if (!sale) return null;
-
-  const [isPaid, setIsPaid] = useState((sale as any).paid || false);
-  const [paymentTime, setPaymentTime] = useState((sale as any).paymentTime || "");
+export default function SalesDetailsModal({
+  isOpen,
+  onClose,
+  sale,
+  onSaleUpdated,
+}: SalesDetailsModalProps) {
+  const [isPaid, setIsPaid] = useState((sale as any)?.paid || false);
+  const [paymentTime, setPaymentTime] = useState((sale as any)?.paymentTime || "");
   const [isUpdating, setIsUpdating] = useState(false);
+
+  if (!sale) return null;
 
   const clientName = sale.Client?.name || sale.client;
   const discount = (sale as any).discount || 0;
@@ -85,7 +90,9 @@ export default function SalesDetailsModal({ isOpen, onClose, sale, onSaleUpdated
                 </div>
                 <div className="flex justify-between">
                   <p className="text-xs text-gray-600">Data</p>
-                  <p className="font-medium text-gray-800">{formatDate(sale.createdAt)}</p>
+                  <p className="font-medium text-gray-800">
+                    {formatDate(sale.createdAt)}
+                  </p>
                 </div>
                 {sale.observation && (
                   <div className="pt-2 border-t border-gray-300">
@@ -99,7 +106,13 @@ export default function SalesDetailsModal({ isOpen, onClose, sale, onSaleUpdated
             </div>
 
             {/* Payment Status */}
-            <div className="mb-6 rounded-lg p-5 border-2" style={{ borderColor: isPaid ? '#10b981' : '#f59e0b', backgroundColor: isPaid ? '#f0fdf4' : '#fffbf0' }}>
+            <div
+              className="mb-6 rounded-lg p-5 border-2"
+              style={{
+                borderColor: isPaid ? "#10b981" : "#f59e0b",
+                backgroundColor: isPaid ? "#f0fdf4" : "#fffbf0",
+              }}
+            >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-800">Status de Pagamento</h3>
                 <span
@@ -170,8 +183,11 @@ export default function SalesDetailsModal({ isOpen, onClose, sale, onSaleUpdated
               <div className="space-y-2 max-h-[300px] overflow-y-auto">
                 {sale.Products && sale.Products.length > 0 ? (
                   sale.Products.map((saleProduct) => {
-                    const salePrice = saleProduct.productSaleValue ?? saleProduct.Product.value;
-                    const priceChanged = saleProduct.productSaleValue && saleProduct.productSaleValue !== saleProduct.Product.value;
+                    const salePrice =
+                      saleProduct.productSaleValue ?? saleProduct.Product.value;
+                    const priceChanged =
+                      saleProduct.productSaleValue &&
+                      saleProduct.productSaleValue !== saleProduct.Product.value;
                     return (
                       <div
                         key={saleProduct.id}
@@ -208,13 +224,21 @@ export default function SalesDetailsModal({ isOpen, onClose, sale, onSaleUpdated
                                 R$ {saleProduct.Product.value.toFixed(2)}
                               </p>
                             </div>
-                            <div className={priceChanged ? "border-l-2 border-yellow-400 pl-4" : ""}>
+                            <div
+                              className={
+                                priceChanged ? "border-l-2 border-yellow-400 pl-4" : ""
+                              }
+                            >
                               <p className="text-xs text-gray-600 mb-1">Preço de Venda</p>
-                              <p className={`text-sm font-semibold ${priceChanged ? "text-yellow-600" : "text-gray-800"}`}>
+                              <p
+                                className={`text-sm font-semibold ${priceChanged ? "text-yellow-600" : "text-gray-800"}`}
+                              >
                                 R$ {salePrice.toFixed(2)}
                               </p>
                               {priceChanged && (
-                                <p className={`text-xs mt-1 font-semibold ${salePrice > saleProduct.Product.value ? "text-red-600" : "text-green-600"}`}>
+                                <p
+                                  className={`text-xs mt-1 font-semibold ${salePrice > saleProduct.Product.value ? "text-red-600" : "text-green-600"}`}
+                                >
                                   {salePrice > saleProduct.Product.value
                                     ? `+R$ ${(salePrice - saleProduct.Product.value).toFixed(2)}`
                                     : `-R$ ${(saleProduct.Product.value - salePrice).toFixed(2)}`}
@@ -237,7 +261,9 @@ export default function SalesDetailsModal({ isOpen, onClose, sale, onSaleUpdated
                     );
                   })
                 ) : (
-                  <p className="text-center text-gray-500 py-4">Nenhum produto nesta venda</p>
+                  <p className="text-center text-gray-500 py-4">
+                    Nenhum produto nesta venda
+                  </p>
                 )}
               </div>
             </div>

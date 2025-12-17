@@ -73,25 +73,25 @@ export default function ClientsPage() {
         <h1 className="text-3xl font-bold text-gray-800">Clientes</h1>
         <div className="flex gap-2">
           <div className="flex relative mr-4">
-          <input
-            type="text"
-            placeholder="Buscar cliente"
-            className="border rounded-lg p-2 text-black"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <MagnifyingGlass className="absolute right-2 top-2" size={26} color="gray" />
-        </div>
+            <input
+              type="text"
+              placeholder="Buscar cliente"
+              className="border rounded-lg p-2 text-black"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <MagnifyingGlass className="absolute right-2 top-2" size={26} color="gray" />
+          </div>
 
-        <button
-          onClick={() => {
-            setPageType("add");
-            setIsModalOpen(true);
-          }}
-          className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out"
-        >
-          Adicionar Cliente
-        </button>
+          <button
+            onClick={() => {
+              setPageType("add");
+              setIsModalOpen(true);
+            }}
+            className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out"
+          >
+            Adicionar Cliente
+          </button>
         </div>
       </div>
 

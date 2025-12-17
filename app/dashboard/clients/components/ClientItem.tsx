@@ -1,19 +1,28 @@
-/* eslint-disable no-unused-vars */
 import { Client } from "@/app/interfaces/client";
 import { Pencil, Trash } from "phosphor-react";
+import React from "react";
 
 type ClientItemProps = {
   client: Client;
   index: number;
+  // eslint-disable-next-line no-unused-vars
   onEdit: (client: Client) => void;
+  // eslint-disable-next-line no-unused-vars
   onDelete: (clientId: string) => void;
+  // eslint-disable-next-line no-unused-vars
   onRowClick: (client: Client) => void;
 };
 
-export default function ClientItem({ client, index, onEdit, onDelete, onRowClick }: ClientItemProps) {
+export default function ClientItem({
+  client,
+  index,
+  onEdit,
+  onDelete,
+  onRowClick,
+}: ClientItemProps) {
   const changeBg = index % 2 !== 0;
 
-  const handleRowClick = (e: React.MouseEvent) => {
+  const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
     // Don't open details if clicking on action buttons
     if ((e.target as HTMLElement).closest("button")) {
       return;

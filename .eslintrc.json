@@ -2,8 +2,10 @@
   "extends": [
     "next/core-web-vitals",
     "eslint:recommended",
-    "plugin:prettier/recommended"],
-    "rules": {
-      "prettier/prettier": ["error", { "printWidth": 90 }]
-    }
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "prettier/prettier": ["error", { "printWidth": 90 }],
+    "react-hooks/exhaustive-deps": "off"
+  }
 }

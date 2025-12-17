@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Product } from "@/app/interfaces/product";
 import Image from "next/image";
 import { formatToBRL } from "@/app/utils/currency";
-import { DotsThreeVertical, Info, Pencil, Plus, Minus } from "phosphor-react";
+import { DotsThreeVertical, Info, Pencil } from "phosphor-react";
 
 interface ProductCardProps {
   product: Product;
@@ -50,7 +50,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="cursor-pointer transition-opacity duration-200 ease-in-out hover:opacity-60"
           onClick={toggleMenu}
         />
-      
         {isMenuOpen && (
           <div
             ref={menuRef}
@@ -103,7 +102,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
       >
         {product.quantity > 0 ? `Em estoque: ${product.quantity}` : "Fora de estoque"}
       </p>
-      <p className="text-gray-800 font-semibold text-xs mt-1">{formatToBRL(product.value)}</p>
+      <p className="text-gray-800 font-semibold text-xs mt-1">
+        {formatToBRL(product.value)}
+      </p>
     </div>
   );
 };

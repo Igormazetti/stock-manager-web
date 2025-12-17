@@ -17,7 +17,11 @@ interface UseProductsReturn {
   refetch: () => Promise<void>;
 }
 
-export function useProducts({ skip, searchTerm, filterOption }: UseProductsParams): UseProductsReturn {
+export function useProducts({
+  skip,
+  searchTerm,
+  filterOption,
+}: UseProductsParams): UseProductsReturn {
   const [products, setProducts] = useState<Product[]>([]);
   const [pages, setPages] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +30,7 @@ export function useProducts({ skip, searchTerm, filterOption }: UseProductsParam
   const fetchProducts = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await apiFetch<ProductRequestData>(
         `/products?skip=${skip}&take=8&name=${searchTerm}&order=${filterOption}`,
@@ -47,6 +51,7 @@ export function useProducts({ skip, searchTerm, filterOption }: UseProductsParam
 
   useEffect(() => {
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skip, searchTerm, filterOption]);
 
   return {

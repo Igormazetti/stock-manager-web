@@ -46,6 +46,7 @@ export function useClients({ skip, searchTerm }: UseClientsParams): UseClientsRe
 
   useEffect(() => {
     fetchClients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skip, searchTerm]);
 
   return {

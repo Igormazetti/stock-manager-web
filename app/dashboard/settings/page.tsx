@@ -37,8 +37,7 @@ export default function SettingsPage() {
                 Editar Dados da Empresa
               </h2>
               <p className="text-gray-600 mb-4">
-                Atualize as informações básicas da sua empresa, como nome e
-                email.
+                Atualize as informações básicas da sua empresa, como nome e email.
               </p>
               <button
                 onClick={() => setIsEditCompanyOpen(true)}
@@ -54,18 +53,15 @@ export default function SettingsPage() {
             key="logo"
             title={
               <div className="flex items-center gap-2">
-                <Image size={18} />
+                <Image size={18} alt="Logo icon" />
                 Logo
               </div>
             }
           >
             <div className="p-4 space-y-4">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                Alterar Logo
-              </h2>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Alterar Logo</h2>
               <p className="text-gray-600 mb-4">
-                Atualize o logo da sua empresa. Formatos aceitos: PNG, JPG,
-                GIF.
+                Atualize o logo da sua empresa. Formatos aceitos: PNG, JPG, GIF.
               </p>
               <button
                 onClick={() => setIsEditLogoOpen(true)}
@@ -91,8 +87,8 @@ export default function SettingsPage() {
                 Redefinir Senha
               </h2>
               <p className="text-gray-600 mb-4">
-                Altere sua senha de acesso à plataforma. Use uma senha forte
-                com letras, números e caracteres especiais.
+                Altere sua senha de acesso à plataforma. Use uma senha forte com letras,
+                números e caracteres especiais.
               </p>
               <button
                 onClick={() => setIsResetPasswordOpen(true)}
@@ -111,10 +107,7 @@ export default function SettingsPage() {
         onClose={() => setIsEditCompanyOpen(false)}
       />
 
-      <EditLogoModal
-        isOpen={isEditLogoOpen}
-        onClose={() => setIsEditLogoOpen(false)}
-      />
+      <EditLogoModal isOpen={isEditLogoOpen} onClose={() => setIsEditLogoOpen(false)} />
 
       <ResetPasswordModal
         isOpen={isResetPasswordOpen}

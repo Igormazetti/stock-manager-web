@@ -57,21 +57,21 @@ export default function SalesPage() {
       <div className="w-full flex justify-between items-center mb-4 gap-2">
         <h1 className="text-3xl font-bold text-gray-800">Vendas</h1>
         <div className="flex gap-2">
-        <button
-          onClick={() => setIsFilterModalOpen(true)}
-          className="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition duration-200 ease-in-out flex items-center gap-2"
-        >
-          <FunnelSimple size={20} />
-          Filtros
-        </button>
-        <button
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
-          className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out"
-        >
-          Adicionar Venda
-        </button>
+          <button
+            onClick={() => setIsFilterModalOpen(true)}
+            className="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition duration-200 ease-in-out flex items-center gap-2"
+          >
+            <FunnelSimple size={20} />
+            Filtros
+          </button>
+          <button
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+            className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out"
+          >
+            Adicionar Venda
+          </button>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import type { ReactNode } from "react";
 import "./globals.css";
 import NextAuthSessionProvider from "@/providers/sessionProvider";
 import { Toaster } from "react-hot-toast";
@@ -12,20 +13,16 @@ export const metadata: Metadata = {
   description: "Manage your stock with ease",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-          <NextAuthSessionProvider>
-            <NextUIProvider>
-              {children}
-              <Toaster position="top-right" />
-            </NextUIProvider>
-          </NextAuthSessionProvider>
+        <NextAuthSessionProvider>
+          <NextUIProvider>
+            {children}
+            <Toaster position="top-right" />
+          </NextUIProvider>
+        </NextAuthSessionProvider>
       </body>
     </html>
   );

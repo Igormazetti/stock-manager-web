@@ -55,7 +55,7 @@ export default function AddProductModal({
   onClose,
   pageType,
   product,
-  refetch
+  refetch,
 }: AddProductModalProps) {
   const cookiesData = Cookies.get("company");
 
@@ -98,7 +98,7 @@ export default function AddProductModal({
         await refetch();
 
         handleClose();
-      } catch (error) {
+      } catch {
         toast.error("Erro ao editar produto!");
       }
 
@@ -116,7 +116,7 @@ export default function AddProductModal({
 
       handleClose();
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error("Erro ao salvar produto!");
     }
   };
@@ -134,7 +134,6 @@ export default function AddProductModal({
       reset();
     }
   }, [isOpen, pageType, product, setValue, reset]);
-
 
   return (
     <ModalComponent isOpen={isOpen} onClose={handleClose}>

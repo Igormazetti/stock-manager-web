@@ -177,12 +177,8 @@ export default function EditLogoModal({ isOpen, onClose }: EditLogoModalProps) {
               >
                 <div className="flex flex-col items-center gap-2">
                   <Upload size={24} className="text-gray-500" />
-                  <span className="text-sm">
-                    Clique para selecionar uma imagem
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    PNG, JPG, GIF até 5MB
-                  </span>
+                  <span className="text-sm">Clique para selecionar uma imagem</span>
+                  <span className="text-xs text-gray-500">PNG, JPG, GIF até 5MB</span>
                 </div>
               </label>
             </div>

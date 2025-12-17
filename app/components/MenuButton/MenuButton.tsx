@@ -1,7 +1,5 @@
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Package, Money, Users
-} from "phosphor-react";
+import { Package, Money, Users } from "phosphor-react";
 import { colors } from "@/app/styles/colors";
 
 interface IMenuButton {
@@ -22,7 +20,7 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
       case "clients":
         return <Users size={32} />;
     }
-  }
+  };
 
   const getButtonText = () => {
     switch (path) {
@@ -33,17 +31,17 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
       case "clients":
         return "Clientes";
     }
-  }
+  };
 
   const handleClick = () => {
     if (!pathname.includes(path)) {
       router.push(`/dashboard/${path}`);
     }
-  }
+  };
 
   const isActive = (path: string) => {
     return pathname.includes(path);
-  }
+  };
 
   return !isOpen ? (
     <button
@@ -88,5 +86,4 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
       {getButtonText() || ""}
     </button>
   );
-
 }

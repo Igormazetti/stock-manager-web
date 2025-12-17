@@ -13,7 +13,14 @@ interface InputProps {
   [key: string]: any;
 }
 
-const CustomInput: React.FC<InputProps> = ({ label, id, type = "text", error, registration, ...rest }) => {
+const CustomInput: React.FC<InputProps> = ({
+  label,
+  id,
+  type = "text",
+  error,
+  registration,
+  ...rest
+}) => {
   return (
     <div className="mb-4">
       <label htmlFor={id} className="block text-sm text-gray-600 font-medium mb-1">

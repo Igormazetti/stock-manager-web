@@ -11,13 +11,8 @@ export default function Header() {
   const [company, setCompany] = useState<any>(null);
   const [isProductNotificationsOpen, setIsProductNotificationsOpen] = useState(false);
   const [isSalesNotificationsOpen, setIsSalesNotificationsOpen] = useState(false);
-  const {
-    notificationsProduct,
-    notificationsSales,
-    hasMore,
-    isLoading,
-    loadMore,
-  } = useNotifications();
+  const { notificationsProduct, notificationsSales, hasMore, isLoading, loadMore } =
+    useNotifications();
 
   useEffect(() => {
     // Read company data from cookies on mount
@@ -37,18 +32,14 @@ export default function Header() {
   }, []);
 
   const unreadProductCount = notificationsProduct.filter(
-    (notification) => !notification.readed
+    (notification) => !notification.readed,
   ).length;
   const unreadSalesCount = notificationsSales.filter(
-    (notification) => !notification.readed
+    (notification) => !notification.readed,
   ).length;
 
-  const handleLoadMoreProducts = async () => {
-    await loadMore("PRODUCTS");
-  };
-
-  const handleLoadMoreSales = async () => {
-    await loadMore("SALES");
+  const handleLoadMore = async () => {
+    await loadMore();
   };
 
   return (
@@ -72,9 +63,11 @@ export default function Header() {
               }}
             >
               {company.logoUrl.startsWith("data:") ? (
-                <img
+                <Image
                   src={company.logoUrl}
                   alt={company.name || "Company Logo"}
+                  width={48}
+                  height={48}
                   style={{
                     maxWidth: "100%",
                     maxHeight: "100%",
@@ -106,13 +99,9 @@ export default function Header() {
           )}
 
           <div className="flex flex-col">
-            <h1
-              className="text-xl font-bold"
-              style={{ color: colors.graphite }}
-            >
+            <h1 className="text-xl font-bold" style={{ color: colors.graphite }}>
               {company?.name || "Minha Empresa"}
             </h1>
-         
           </div>
         </div>
 
@@ -153,22 +142,20 @@ export default function Header() {
         isOpen={isProductNotificationsOpen}
         onClose={() => setIsProductNotificationsOpen(false)}
         notifications={notificationsProduct}
-        entity="PRODUCTS"
         title="Notificações de Produtos"
         hasMore={hasMore}
         isLoading={isLoading}
-        onLoadMore={handleLoadMoreProducts}
+        onLoadMore={handleLoadMore}
       />
 
       <NotificationsModal
         isOpen={isSalesNotificationsOpen}
         onClose={() => setIsSalesNotificationsOpen(false)}
         notifications={notificationsSales}
-        entity="SALES"
         title="Notificações de Vendas"
         hasMore={hasMore}
         isLoading={isLoading}
-        onLoadMore={handleLoadMoreSales}
+        onLoadMore={handleLoadMore}
       />
     </header>
   );

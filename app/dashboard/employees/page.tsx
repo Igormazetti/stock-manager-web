@@ -1,37 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import EmployeesTable from "./components/EmployeesTable";
-import { useQuery } from "react-query";
-import { Employee } from "@/app/interfaces/employee";
-import { apiFetch } from "@/app/shared/requests";
-import toast from "react-hot-toast";
 import ModalComponent from "@/app/components/Modal/Modal";
+import { useEmployees } from "@/app/hooks/useEmployees";
+
+export const dynamic = "force-dynamic";
 
 export default function EmployeesPage() {
   const [employeeStatus, setEmployeeStatus] = useState<boolean | null>(true);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  const { data: employees } = useQuery<Employee[]>(
-    ["solicitations", employeeStatus],
-    () => getEmployees(),
-    {
-      staleTime: 1000 * 60 * 3,
-      refetchInterval: 1000 * 60 * 3,
-    },
-  );
-
-  const getEmployees = async () => {
-    try {
-      const response = await apiFetch<any>(
-        `/employee${employeeStatus === null ? "" : `?active=${employeeStatus}`}`,
-        "GET",
-      );
-      return response.data.employees || [];
-    } catch (error) {
-      console.log(error);
-      toast.error("Erro ao carregar funcionários");
-    }
-  };
+  const { employees } = useEmployees({ employeeStatus });
 
   const handleFilterChange = (value: string) => {
     if (value === "all") {

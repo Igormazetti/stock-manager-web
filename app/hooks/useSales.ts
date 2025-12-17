@@ -21,7 +21,15 @@ interface UseProductsReturn {
   refetch: () => Promise<void>;
 }
 
-export function useSales({ skip, createdAt, clientName, product, paid, paymentTimeStart, paymentTimeEnd }: UseSalesParams): UseProductsReturn {
+export function useSales({
+  skip,
+  createdAt,
+  clientName,
+  product,
+  paid,
+  paymentTimeStart,
+  paymentTimeEnd,
+}: UseSalesParams): UseProductsReturn {
   const [sales, setSales] = useState<Sale[]>([]);
   const [pages, setPages] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +68,7 @@ export function useSales({ skip, createdAt, clientName, product, paid, paymentTi
 
   useEffect(() => {
     fetchSales();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skip, createdAt, clientName, product, paid, paymentTimeStart, paymentTimeEnd]);
 
   return {
