@@ -58,6 +58,8 @@ export default function RegisterPage() {
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
 
+    console.log(apiUrl, "aqui");
+
     try {
       const response = await fetch(`${apiUrl}/company`, {
         method: "POST",
