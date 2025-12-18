@@ -4,8 +4,6 @@ import { cookies } from "next/headers";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-console.log(apiUrl);
-
 const authOptions: NextAuthOptions = {
   providers: [
     Credentials({
@@ -16,7 +14,7 @@ const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const response = await fetch("http://localhost:6060/company/login", {
+          const response = await fetch("apiUrl", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

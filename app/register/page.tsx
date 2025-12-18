@@ -56,8 +56,10 @@ export default function RegisterPage() {
   const onSubmitHandler: SubmitHandler<RegisterFormData> = async (data) => {
     setLoading(true);
 
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
+
     try {
-      const response = await fetch("http://localhost:6060/company", {
+      const response = await fetch(`${apiUrl}/company`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
