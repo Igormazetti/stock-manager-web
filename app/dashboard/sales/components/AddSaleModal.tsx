@@ -51,16 +51,13 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
   const [paymentTime, setPaymentTime] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Get notifications hook for refresh
   const { refreshNotifications } = useNotifications();
 
-  // Fetch clients for autocomplete
   const { clients } = useClients({
     skip: 0,
     searchTerm: clientSearch,
   });
 
-  // Fetch products for autocomplete
   const { products } = useProducts({
     skip: 0,
     searchTerm: productSearch,
@@ -95,6 +92,8 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
         return;
       }
 
+      console.log(product);
+
       setSelectedProducts([
         ...selectedProducts,
         {
@@ -113,20 +112,26 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
     setSelectedProducts(selectedProducts.filter((p) => p.productId !== productId));
   };
 
-  const handleQuantityChange = (productId: string, quantity: number) => {
-    if (quantity <= 0) return;
-    setSelectedProducts(
-      selectedProducts.map((p) => (p.productId === productId ? { ...p, quantity } : p)),
-    );
+  const handleQuantityChange = (productId: string, value: string) => {
+    const quantity = parseInt(value);
+    if (value === "" || (quantity > 0 && !isNaN(quantity))) {
+      setSelectedProducts(
+        selectedProducts.map((p) =>
+          p.productId === productId ? { ...p, quantity: quantity || 1 } : p,
+        ),
+      );
+    }
   };
 
-  const handlePriceChange = (productId: string, price: number) => {
-    if (price < 0) return;
-    setSelectedProducts(
-      selectedProducts.map((p) =>
-        p.productId === productId ? { ...p, productSaleValue: price } : p,
-      ),
-    );
+  const handlePriceChange = (productId: string, value: string) => {
+    const price = parseFloat(value);
+    if (value === "" || (price >= 0 && !isNaN(price))) {
+      setSelectedProducts(
+        selectedProducts.map((p) =>
+          p.productId === productId ? { ...p, productSaleValue: price || 0 } : p,
+        ),
+      );
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -292,15 +297,11 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                             Preço de Venda (R$)
                           </label>
                           <input
-                            type="number"
-                            min="0"
-                            step="0.01"
+                            type="text"
+                            inputMode="decimal"
                             value={product.productSaleValue}
                             onChange={(e) =>
-                              handlePriceChange(
-                                product.productId,
-                                parseFloat(e.target.value) || 0,
-                              )
+                              handlePriceChange(product.productId, e.target.value)
                             }
                             className="w-full px-2 py-1 border border-gray-300 rounded text-center text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
@@ -308,14 +309,11 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                         <div className="w-20">
                           <label className="block text-xs text-gray-600 mb-1">Qtd</label>
                           <input
-                            type="number"
-                            min="1"
+                            type="text"
+                            inputMode="numeric"
                             value={product.quantity}
                             onChange={(e) =>
-                              handleQuantityChange(
-                                product.productId,
-                                parseInt(e.target.value) || 1,
-                              )
+                              handleQuantityChange(product.productId, e.target.value)
                             }
                             className="w-full px-2 py-1 border border-gray-300 rounded text-center text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
