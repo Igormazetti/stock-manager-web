@@ -116,7 +116,7 @@ export default function AddClientModal({
           {pageType === "edit" ? "Editar Cliente" : "Adicionar Cliente"}
         </ModalHeader>
         <ModalBody className="text-gray-500">
-          <form onSubmit={handleSubmit(onSubmitHandler)} className="w-full max-w-sm pb-4">
+          <form onSubmit={handleSubmit(onSubmitHandler)} className="w-full pb-4">
             <CustomInput
               label="Nome *"
               id="name"
