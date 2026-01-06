@@ -102,8 +102,8 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
           productId: product.id,
           productTitle: product.title,
           quantity: 1,
-          value: product.value,
-          productSaleValue: product.originalValue,
+          value: product.originalValue,
+          productSaleValue: product.value,
         },
       ]);
       setProductSearch("");
@@ -129,7 +129,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
     if (price < 0) return;
     setSelectedProducts(
       selectedProducts.map((p) =>
-        p.productId === productId ? { ...p, value: price } : p,
+        p.productId === productId ? { ...p, productSaleValue: price } : p,
       ),
     );
   };
@@ -180,10 +180,12 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
   const totalValue = useMemo(
     () =>
       selectedProducts.reduce((total, product) => {
-        return total + product.value * product.quantity;
+        return total + product.productSaleValue * product.quantity;
       }, 0),
     [selectedProducts],
   );
+
+  console.log(products)
 
   return (
     <ModalComponent isOpen={isOpen} size="3xl" onClose={handleClose}>
@@ -280,7 +282,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                             {product.productTitle}
                           </p>
                           <p className="text-xs text-gray-500">
-                            Preço original: R$ {product.productSaleValue.toFixed(2)} un.
+                            Preço original: R$ {product.value.toFixed(2)} un.
                           </p>
                         </div>
                         <button
@@ -300,7 +302,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                             type="number"
                             min="0"
                             step="0.01"
-                            value={product.value}
+                            value={product.productSaleValue}
                             onChange={(e) =>
                               handlePriceChange(product.productId, Number(e.target.value))
                             }
@@ -322,7 +324,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
                         <div className="text-right">
                           <p className="text-xs text-gray-600 mb-1">Total</p>
                           <p className="font-semibold text-gray-800 text-sm">
-                            R$ {(product.value * product.quantity).toFixed(2)}
+                            R$ {(product.productSaleValue * product.quantity).toFixed(2)}
                           </p>
                         </div>
                       </div>

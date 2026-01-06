@@ -30,8 +30,9 @@ export default function SalesDetailsModal({
   const [companyName, setCompanyName] = useState<string>("Minha Empresa");
   const printRef = useRef<HTMLDivElement>(null);
 
+  console.log(sale)
+
   useEffect(() => {
-    // Get company name from cookies
     const cookieData = Cookies.get("company");
     const companyData = cookieData ? JSON.parse(cookieData) : null;
     if (companyData?.name) {
@@ -41,7 +42,6 @@ export default function SalesDetailsModal({
 
   useEffect(() => {
     if ((sale as any)?.paymentTime) {
-      // Convert ISO string to datetime-local format (YYYY-MM-DDTHH:mm)
       const isoTime = (sale as any).paymentTime;
       const date = new Date(isoTime);
       const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
@@ -292,7 +292,7 @@ export default function SalesDetailsModal({
                                 </p>
                                 {priceChanged && (
                                   <p
-                                    className={`text-xs mt-1 font-semibold ${salePrice > saleProduct.Product.value ? "text-red-600" : "text-green-600"}`}
+                                    className={`text-xs mt-1 font-semibold ${salePrice > saleProduct.Product.value ? "text-green-600" : "text-red-600"}`}
                                   >
                                     {salePrice > saleProduct.Product.value
                                       ? `+R$ ${(salePrice - saleProduct.Product.value).toFixed(2)}`

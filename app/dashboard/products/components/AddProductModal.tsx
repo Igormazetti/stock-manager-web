@@ -92,6 +92,7 @@ export default function AddProductModal({
       try {
         await apiFetch(`/products/update/${product.id}`, "PATCH", {
           ...data,
+          productSaleValue: data.value,
         });
         toast.success("Produto atualizado com sucesso!");
 
@@ -108,6 +109,7 @@ export default function AddProductModal({
     try {
       await apiFetch(`/products/create`, "POST", {
         ...data,
+        productSaleValue: data.value,
         companyId: company.id,
       });
       toast.success("Produto adicionado com sucesso!");

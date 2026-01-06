@@ -12,6 +12,8 @@ export const SalePrintReceipt = React.forwardRef<HTMLDivElement, SalePrintReceip
   ({ sale, companyName }, ref) => {
     const clientName = sale.Client?.name || sale.client;
 
+    console.log(sale)
+
     return (
       <div ref={ref} className="print-receipt">
         {/* Header - Company Name */}
@@ -46,8 +48,7 @@ export const SalePrintReceipt = React.forwardRef<HTMLDivElement, SalePrintReceip
           <tbody>
             {sale.Products && sale.Products.length > 0 ? (
               sale.Products.map((saleProduct) => {
-                const salePrice =
-                  saleProduct.productSaleValue ?? saleProduct.Product.value;
+                const salePrice = saleProduct.productSaleValue;
                 const total = salePrice * saleProduct.quantity_sold;
 
                 return (
