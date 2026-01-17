@@ -12,14 +12,10 @@ export const SalePrintReceipt = React.forwardRef<HTMLDivElement, SalePrintReceip
   ({ sale, companyName }, ref) => {
     const clientName = sale.Client?.name || sale.client;
 
-    console.log(sale)
-
     return (
       <div ref={ref} className="print-receipt">
-        {/* Header - Company Name */}
         <h1 className="company-name">{companyName}</h1>
 
-        {/* Client Info and Sale Date Card */}
         <div className="info-card">
           <div className="info-row">
             <span className="info-label">Cliente:</span>
