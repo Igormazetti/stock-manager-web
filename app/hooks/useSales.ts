@@ -1,6 +1,7 @@
 import { Sale, SaleRequestData } from "@/app/interfaces/sales";
 import { apiFetch } from "@/app/shared/requests";
-import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 
 interface UseSalesParams {
@@ -13,12 +14,30 @@ interface UseSalesParams {
   paymentTimeEnd?: string;
 }
 
-interface UseProductsReturn {
+interface UseSalesReturn {
   sales: Sale[];
   pages: number;
   isLoading: boolean;
   error: Error | null;
   refetch: () => Promise<void>;
+}
+
+async function fetchSales(params: UseSalesParams) {
+  const searchParams = new URLSearchParams();
+  searchParams.append("skip", params.skip.toString());
+  if (params.createdAt) searchParams.append("createdAt", params.createdAt);
+  if (params.clientName) searchParams.append("clientName", params.clientName);
+  if (params.product) searchParams.append("product", params.product);
+  if (params.paid !== undefined) searchParams.append("paid", params.paid.toString());
+  if (params.paymentTimeStart)
+    searchParams.append("paymentTimeStart", params.paymentTimeStart);
+  if (params.paymentTimeEnd) searchParams.append("paymentTimeEnd", params.paymentTimeEnd);
+
+  const response = await apiFetch<SaleRequestData>(
+    `/sales?${searchParams.toString()}`,
+    "GET",
+  );
+  return response.data;
 }
 
 export function useSales({
@@ -29,53 +48,52 @@ export function useSales({
   paid,
   paymentTimeStart,
   paymentTimeEnd,
-}: UseSalesParams): UseProductsReturn {
-  const [sales, setSales] = useState<Sale[]>([]);
-  const [pages, setPages] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+}: UseSalesParams): UseSalesReturn {
+  const queryClient = useQueryClient();
+  const errorShownRef = useRef(false);
 
-  const fetchSales = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const params = new URLSearchParams();
-      params.append("skip", skip.toString());
-      if (createdAt) params.append("createdAt", createdAt);
-      if (clientName) params.append("clientName", clientName);
-      if (product) params.append("product", product);
-      if (paid !== undefined) params.append("paid", paid.toString());
-      if (paymentTimeStart) params.append("paymentTimeStart", paymentTimeStart);
-      if (paymentTimeEnd) params.append("paymentTimeEnd", paymentTimeEnd);
-
-      const response = await apiFetch<SaleRequestData>(
-        `/sales?${params.toString()}`,
-        "GET",
-      );
-      setPages(response.data.pages);
-      setSales(response.data.sales || []);
-    } catch (err) {
-      const error = err as Error;
-      setError(error);
-      console.log(error);
-      toast.error("Erro ao carregar vendas");
-      setSales([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data, isLoading, error } = useQuery({
+    queryKey: [
+      "sales",
+      skip,
+      createdAt,
+      clientName,
+      product,
+      paid,
+      paymentTimeStart,
+      paymentTimeEnd,
+    ],
+    queryFn: () =>
+      fetchSales({
+        skip,
+        createdAt,
+        clientName,
+        product,
+        paid,
+        paymentTimeStart,
+        paymentTimeEnd,
+      }),
+  });
 
   useEffect(() => {
-    fetchSales();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [skip, createdAt, clientName, product, paid, paymentTimeStart, paymentTimeEnd]);
+    if (error && !errorShownRef.current) {
+      errorShownRef.current = true;
+      toast.error("Erro ao carregar vendas");
+    }
+    if (!error) {
+      errorShownRef.current = false;
+    }
+  }, [error]);
+
+  const refetch = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["sales"] });
+  }, [queryClient]);
 
   return {
-    sales,
-    pages,
+    sales: data?.sales || [],
+    pages: data?.pages || 0,
     isLoading,
-    error,
-    refetch: fetchSales,
+    error: error as Error | null,
+    refetch,
   };
 }

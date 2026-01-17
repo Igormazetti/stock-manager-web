@@ -1,6 +1,7 @@
 import { Employee } from "@/app/interfaces/employee";
 import { apiFetch } from "@/app/shared/requests";
-import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 
 interface UseEmployeesParams {
@@ -14,41 +15,41 @@ interface UseEmployeesReturn {
   refetch: () => Promise<void>;
 }
 
+async function fetchEmployees(employeeStatus: boolean | null) {
+  const response = await apiFetch<any>(
+    `/employee${employeeStatus === null ? "" : `?active=${employeeStatus}`}`,
+    "GET",
+  );
+  return response.data;
+}
+
 export function useEmployees({ employeeStatus }: UseEmployeesParams): UseEmployeesReturn {
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const queryClient = useQueryClient();
+  const errorShownRef = useRef(false);
 
-  const fetchEmployees = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await apiFetch<any>(
-        `/employee${employeeStatus === null ? "" : `?active=${employeeStatus}`}`,
-        "GET",
-      );
-      setEmployees(response.data.employees || []);
-    } catch (err) {
-      const error = err as Error;
-      setError(error);
-      console.log(error);
-      toast.error("Erro ao carregar funcionários");
-      setEmployees([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["employees", employeeStatus],
+    queryFn: () => fetchEmployees(employeeStatus),
+  });
 
   useEffect(() => {
-    fetchEmployees();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [employeeStatus]);
+    if (error && !errorShownRef.current) {
+      errorShownRef.current = true;
+      toast.error("Erro ao carregar funcionários");
+    }
+    if (!error) {
+      errorShownRef.current = false;
+    }
+  }, [error]);
+
+  const refetch = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["employees"] });
+  }, [queryClient]);
 
   return {
-    employees,
+    employees: data?.employees || [],
     isLoading,
-    error,
-    refetch: fetchEmployees,
+    error: error as Error | null,
+    refetch,
   };
 }

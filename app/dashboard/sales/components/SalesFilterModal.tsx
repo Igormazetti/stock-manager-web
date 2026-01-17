@@ -69,8 +69,9 @@ export default function SalesFilterModal({
     if (createdAt.trim()) appliedFilters.createdAt = createdAt.trim();
     if (paid !== undefined) appliedFilters.paid = paid;
     if (paymentTimeStart.trim())
-      appliedFilters.paymentTimeStart = paymentTimeStart.trim();
-    if (paymentTimeEnd.trim()) appliedFilters.paymentTimeEnd = paymentTimeEnd.trim();
+      appliedFilters.paymentTimeStart = `${paymentTimeStart.trim()}T00:00:00`;
+    if (paymentTimeEnd.trim())
+      appliedFilters.paymentTimeEnd = `${paymentTimeEnd.trim()}T23:59:59`;
 
     onApplyFilters(appliedFilters);
     toast.success("Filtros aplicados!");

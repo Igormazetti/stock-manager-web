@@ -1,6 +1,7 @@
 import { Product, ProductRequestData } from "@/app/interfaces/product";
 import { apiFetch } from "@/app/shared/requests";
-import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 
 interface UseProductsParams {
@@ -17,48 +18,46 @@ interface UseProductsReturn {
   refetch: () => Promise<void>;
 }
 
+async function fetchProducts(skip: number, searchTerm: string, filterOption: string) {
+  const response = await apiFetch<ProductRequestData>(
+    `/products?skip=${skip}&take=8&name=${searchTerm}&order=${filterOption}`,
+    "GET",
+  );
+  return response.data;
+}
+
 export function useProducts({
   skip,
   searchTerm,
   filterOption,
 }: UseProductsParams): UseProductsReturn {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [pages, setPages] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const queryClient = useQueryClient();
+  const errorShownRef = useRef(false);
 
-  const fetchProducts = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await apiFetch<ProductRequestData>(
-        `/products?skip=${skip}&take=8&name=${searchTerm}&order=${filterOption}`,
-        "GET",
-      );
-      setPages(response.data.pages);
-      setProducts(response.data.products || []);
-    } catch (err) {
-      const error = err as Error;
-      setError(error);
-      console.log(error);
-      toast.error("Erro ao carregar produtos");
-      setProducts([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["products", skip, searchTerm, filterOption],
+    queryFn: () => fetchProducts(skip, searchTerm, filterOption),
+  });
 
   useEffect(() => {
-    fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [skip, searchTerm, filterOption]);
+    if (error && !errorShownRef.current) {
+      errorShownRef.current = true;
+      toast.error("Erro ao carregar produtos");
+    }
+    if (!error) {
+      errorShownRef.current = false;
+    }
+  }, [error]);
+
+  const refetch = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["products"] });
+  }, [queryClient]);
 
   return {
-    products,
-    pages,
+    products: data?.products || [],
+    pages: data?.pages || 0,
     isLoading,
-    error,
-    refetch: fetchProducts,
+    error: error as Error | null,
+    refetch,
   };
 }

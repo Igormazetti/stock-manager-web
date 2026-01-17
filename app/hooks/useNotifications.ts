@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 import { apiFetch } from "@/app/shared/requests";
 
 export interface Notification {
@@ -9,6 +10,11 @@ export interface Notification {
   productName?: string;
   readed: boolean;
   createdAt: string;
+}
+
+interface NotificationsResponse {
+  data: Notification[];
+  totalCount: number;
 }
 
 interface UseNotificationsReturn {
@@ -23,88 +29,60 @@ interface UseNotificationsReturn {
   refreshNotifications: () => Promise<void>;
 }
 
+const TAKE = 50;
+
+async function fetchNotifications({ pageParam = 0 }) {
+  const response = await apiFetch<NotificationsResponse>(
+    `/notifications?skip=${pageParam}&take=${TAKE}`,
+    "GET",
+  );
+  return {
+    data: Array.isArray(response.data) ? response.data : [],
+    totalCount: response.totalCount || 0,
+    nextOffset: pageParam + TAKE,
+  };
+}
+
 export function useNotifications(): UseNotificationsReturn {
-  const [notificationsProduct, setNotificationsProduct] = useState<Notification[]>([]);
-  const [notificationsSales, setNotificationsSales] = useState<Notification[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [skip, setSkip] = useState(0);
-  const TAKE = 50;
+  const queryClient = useQueryClient();
 
-  const fetchNotifications = useCallback(async (offset: number = 0) => {
-    setIsLoading(true);
-    setError(null);
+  const { data, isLoading, error, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ["notifications"],
+    queryFn: fetchNotifications,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const totalFetched = allPages.reduce((acc, page) => acc + page.data.length, 0);
+      return totalFetched < lastPage.totalCount ? lastPage.nextOffset : undefined;
+    },
+  });
 
-    try {
-      const response = await apiFetch<{ data: Notification[]; totalCount: number }>(
-        `/notifications?skip=${offset}&take=${TAKE}`,
-        "GET",
-      );
+  const allNotifications = data?.pages.flatMap((page) => page.data) || [];
+  const totalCount = data?.pages[0]?.totalCount || 0;
 
-      const allNotifications = Array.isArray(response.data) ? response.data : [];
-      const productNotifications = allNotifications.filter(
-        (notification) => notification.entity === "PRODUCTS",
-      );
-      const salesNotifications = allNotifications.filter(
-        (notification) => notification.entity === "SALES",
-      );
-
-      if (offset === 0) {
-        setNotificationsProduct(productNotifications);
-        setNotificationsSales(salesNotifications);
-      } else {
-        setNotificationsProduct((previousNotifications) => [
-          ...previousNotifications,
-          ...productNotifications,
-        ]);
-        setNotificationsSales((previousNotifications) => [
-          ...previousNotifications,
-          ...salesNotifications,
-        ]);
-      }
-
-      setTotalCount(response.totalCount || 0);
-      setSkip(offset + TAKE);
-    } catch (err) {
-      const error = err as Error;
-      setError(error);
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  const loadMore = useCallback(async () => {
-    await fetchNotifications(skip);
-  }, [skip, fetchNotifications]);
+  const notificationsProduct = allNotifications.filter(
+    (notification) => notification.entity === "PRODUCTS",
+  );
+  const notificationsSales = allNotifications.filter(
+    (notification) => notification.entity === "SALES",
+  );
 
   const refetch = useCallback(async () => {
-    setSkip(0);
-    await fetchNotifications(0);
-  }, [fetchNotifications]);
+    await queryClient.invalidateQueries({ queryKey: ["notifications"] });
+  }, [queryClient]);
 
-  const refreshNotifications = useCallback(async () => {
-    setSkip(0);
-    await fetchNotifications(0);
-  }, [fetchNotifications]);
-
-  useEffect(() => {
-    fetchNotifications(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const hasMore = notificationsProduct.length + notificationsSales.length < totalCount;
+  const loadMore = useCallback(async () => {
+    await fetchNextPage();
+  }, [fetchNextPage]);
 
   return {
     notificationsProduct,
     notificationsSales,
     totalCount,
     isLoading,
-    error,
-    hasMore,
+    error: error as Error | null,
+    hasMore: hasNextPage ?? false,
     loadMore,
     refetch,
-    refreshNotifications,
+    refreshNotifications: refetch,
   };
 }
