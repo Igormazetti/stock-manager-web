@@ -1,4 +1,4 @@
-export function applyPhoneMask(value: string): string {
+export function applyPhoneMask(value: string | undefined | null): string {
   if (!value) return "";
 
   const numbers = value.replace(/\D/g, "");
@@ -16,7 +16,7 @@ export function applyPhoneMask(value: string): string {
   }
 }
 
-export function applyCNPJMask(value: string): string {
+export function applyCNPJMask(value: string | undefined | null): string {
   if (!value) return "";
 
   const numbers = value.replace(/\D/g, "");
@@ -29,14 +29,12 @@ export function applyCNPJMask(value: string): string {
     .substring(0, 18);
 }
 
-export function applyCEPMask(value: string): string {
+export function applyCEPMask(value: string | undefined | null): string {
   if (!value) return "";
 
   const numbers = value.replace(/\D/g, "");
 
-  return numbers
-    .replace(/^(\d{5})(\d)/, "$1-$2")
-    .substring(0, 9);
+  return numbers.replace(/^(\d{5})(\d)/, "$1-$2").substring(0, 9);
 }
 
 export function removeSpecialCharacters(value: string): string {

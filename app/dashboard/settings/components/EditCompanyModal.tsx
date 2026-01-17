@@ -162,9 +162,7 @@ export default function EditCompanyModal({ isOpen, onClose }: EditCompanyModalPr
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                CNPJ
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">CNPJ</label>
               <input
                 type="text"
                 value={cnpj}

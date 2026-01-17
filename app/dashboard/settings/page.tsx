@@ -6,11 +6,7 @@ import ResetPasswordModal from "./components/ResetPasswordModal";
 import EditLogoModal from "./components/EditLogoModal";
 import { Gear, User, Lock, Image } from "phosphor-react";
 import { apiFetch } from "@/app/shared/requests";
-import {
-  applyPhoneMask,
-  applyCNPJMask,
-  applyCEPMask,
-} from "@/app/utils/masks";
+import { applyPhoneMask, applyCNPJMask, applyCEPMask } from "@/app/utils/masks";
 
 interface CompanyData {
   id: string;
@@ -85,12 +81,15 @@ export default function SettingsPage() {
                 Editar Dados da Empresa
               </h2>
               <p className="text-gray-600 mb-4">
-                Atualize as informações da sua empresa, como nome, email, CNPJ, telefone, endereço e dados de localização.
+                Atualize as informações da sua empresa, como nome, email, CNPJ, telefone,
+                endereço e dados de localização.
               </p>
 
               {isLoading ? (
                 <div className="bg-gray-50 rounded-lg p-6 mb-6 border border-gray-200">
-                  <p className="text-gray-500 text-center">Carregando dados da empresa...</p>
+                  <p className="text-gray-500 text-center">
+                    Carregando dados da empresa...
+                  </p>
                 </div>
               ) : companyData ? (
                 <div className="bg-gray-50 rounded-lg p-6 mb-6 border border-gray-200">
@@ -105,53 +104,43 @@ export default function SettingsPage() {
                       <p className="text-base text-gray-800 mt-1">{companyData.email}</p>
                     </div>
 
-                    {companyData.cnpj && (
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">CNPJ</p>
-                        <p className="text-base text-gray-800 mt-1">
-                          {applyCNPJMask(companyData.cnpj)}
-                        </p>
-                      </div>
-                    )}
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">CNPJ</p>
+                      <p className="text-base text-gray-800 mt-1">
+                        {applyCNPJMask(companyData?.cnpj) || ""}
+                      </p>
+                    </div>
 
-                    {companyData.phone && (
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">Telefone</p>
-                        <p className="text-base text-gray-800 mt-1">
-                          {applyPhoneMask(companyData.phone)}
-                        </p>
-                      </div>
-                    )}
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Telefone</p>
+                      <p className="text-base text-gray-800 mt-1">
+                        {applyPhoneMask(companyData.phone)}
+                      </p>
+                    </div>
 
-                    {companyData.address && (
-                      <div className="md:col-span-2">
-                        <p className="text-sm font-medium text-gray-500">Endereço</p>
-                        <p className="text-base text-gray-800 mt-1">{companyData.address}</p>
-                      </div>
-                    )}
+                    <div className="md:col-span-2">
+                      <p className="text-sm font-medium text-gray-500">Endereço</p>
+                      <p className="text-base text-gray-800 mt-1">
+                        {companyData.address}
+                      </p>
+                    </div>
 
-                    {companyData.cep && (
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">CEP</p>
-                        <p className="text-base text-gray-800 mt-1">
-                          {applyCEPMask(companyData.cep)}
-                        </p>
-                      </div>
-                    )}
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">CEP</p>
+                      <p className="text-base text-gray-800 mt-1">
+                        {applyCEPMask(companyData.cep)}
+                      </p>
+                    </div>
 
-                    {companyData.city && (
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">Cidade</p>
-                        <p className="text-base text-gray-800 mt-1">{companyData.city}</p>
-                      </div>
-                    )}
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Cidade</p>
+                      <p className="text-base text-gray-800 mt-1">{companyData.city}</p>
+                    </div>
 
-                    {companyData.state && (
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">Estado</p>
-                        <p className="text-base text-gray-800 mt-1">{companyData.state}</p>
-                      </div>
-                    )}
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Estado</p>
+                      <p className="text-base text-gray-800 mt-1">{companyData.state}</p>
+                    </div>
                   </div>
                 </div>
               ) : null}

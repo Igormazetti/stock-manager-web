@@ -6,9 +6,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { formatDate } from "@/app/utils/dateFormatter";
 import { apiFetch } from "@/app/shared/requests";
 import toast from "react-hot-toast";
-import { SalePrintReceipt } from "./SalePrintReceipt";
+import { SalePrintReceipt, CompanyData } from "./SalePrintReceipt";
 import { Printer } from "phosphor-react";
-import Cookies from "js-cookie";
 import { useReactToPrint } from "react-to-print";
 
 interface SalesDetailsModalProps {
@@ -27,18 +26,9 @@ export default function SalesDetailsModal({
   const [isPaid, setIsPaid] = useState((sale as any)?.paid || false);
   const [paymentTime, setPaymentTime] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
-  const [companyName, setCompanyName] = useState<string>("Minha Empresa");
+  const [companyData, setCompanyData] = useState<CompanyData | null>(null);
+  const [printDateTime, setPrintDateTime] = useState("");
   const printRef = useRef<HTMLDivElement>(null);
-
-  console.log(sale)
-
-  useEffect(() => {
-    const cookieData = Cookies.get("company");
-    const companyData = cookieData ? JSON.parse(cookieData) : null;
-    if (companyData?.name) {
-      setCompanyName(companyData.name);
-    }
-  }, []);
 
   useEffect(() => {
     if ((sale as any)?.paymentTime) {
@@ -53,6 +43,36 @@ export default function SalesDetailsModal({
     }
     setIsPaid((sale as any)?.paid || false);
   }, [sale]);
+
+  const fetchCompanyData = async () => {
+    try {
+      const response = await apiFetch<{ status: number; company: CompanyData }>(
+        "/company",
+        "GET",
+      );
+      setCompanyData((response as any).data.company);
+    } catch (error) {
+      console.log("Error fetching company data:", error);
+    }
+  };
+
+  const formatPrintDateTime = () => {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    return `${day}/${month}/${year} - ${hours}:${minutes}`;
+  };
+
+  const handlePrintClick = async () => {
+    await fetchCompanyData();
+    setPrintDateTime(formatPrintDateTime());
+    setTimeout(() => {
+      handlePrint();
+    }, 100);
+  };
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
@@ -88,7 +108,12 @@ export default function SalesDetailsModal({
     <>
       {/* Hidden Print Component */}
       <div style={{ display: "none" }}>
-        <SalePrintReceipt ref={printRef} sale={sale} companyName={companyName} />
+        <SalePrintReceipt
+          ref={printRef}
+          sale={sale}
+          companyData={companyData}
+          printDateTime={printDateTime}
+        />
       </div>
 
       <ModalComponent isOpen={isOpen} size="3xl" onClose={onClose}>
@@ -96,7 +121,7 @@ export default function SalesDetailsModal({
           <ModalHeader className="flex flex-row gap-2 text-gray-600 w-full justify-between items-center px-6">
             <span className="flex-1 text-center">Detalhes da Venda</span>
             <button
-              onClick={handlePrint}
+              onClick={handlePrintClick}
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 mr-4 rounded-lg shadow-md transition duration-200 flex items-center gap-2"
               title="Imprimir Venda"
             >

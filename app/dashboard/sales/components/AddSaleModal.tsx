@@ -83,7 +83,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
     }
   };
 
-  console.log(products)
+  console.log(products);
 
   const handleAddProduct = (productId: string) => {
     const product = products.find((p) => p.id === productId);
@@ -185,7 +185,7 @@ export default function AddSaleModal({ isOpen, onClose, refetch }: AddSaleModalP
     [selectedProducts],
   );
 
-  console.log(products)
+  console.log(products);
 
   return (
     <ModalComponent isOpen={isOpen} size="3xl" onClose={handleClose}>

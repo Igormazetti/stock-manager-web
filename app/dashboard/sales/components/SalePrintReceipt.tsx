@@ -3,18 +3,92 @@ import React from "react";
 import { Sale } from "@/app/interfaces/sales";
 import { formatDate } from "@/app/utils/dateFormatter";
 
+export interface CompanyData {
+  id: string;
+  name: string;
+  email: string;
+  logoUrl: string | null;
+  valid: boolean;
+  cnpj: string;
+  address: string;
+  phone: string;
+  cep: string;
+  city: string;
+  state: string;
+}
+
 interface SalePrintReceiptProps {
   sale: Sale;
-  companyName: string;
+  companyData: CompanyData | null;
+  printDateTime: string;
 }
 
 export const SalePrintReceipt = React.forwardRef<HTMLDivElement, SalePrintReceiptProps>(
-  ({ sale, companyName }, ref) => {
+  ({ sale, companyData, printDateTime }, ref) => {
     const clientName = sale.Client?.name || sale.client;
+    const companyName = companyData?.name || "Minha Empresa";
+
+    const formatPhone = (phone: string) => {
+      if (!phone) return "";
+      const cleaned = phone.replace(/\D/g, "");
+      if (cleaned.length === 11) {
+        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+      }
+      if (cleaned.length === 10) {
+        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+      }
+      return phone;
+    };
+
+    const formatCnpj = (cnpj: string) => {
+      if (!cnpj) return "";
+      const cleaned = cnpj.replace(/\D/g, "");
+      if (cleaned.length === 14) {
+        return `${cleaned.slice(0, 2)}.${cleaned.slice(2, 5)}.${cleaned.slice(5, 8)}/${cleaned.slice(8, 12)}-${cleaned.slice(12)}`;
+      }
+      return cnpj;
+    };
+
+    const formatCep = (cep: string) => {
+      if (!cep) return "";
+      const cleaned = cep.replace(/\D/g, "");
+      if (cleaned.length === 8) {
+        return `${cleaned.slice(0, 5)}-${cleaned.slice(5)}`;
+      }
+      return cep;
+    };
 
     return (
       <div ref={ref} className="print-receipt">
-        <h1 className="company-name">{companyName}</h1>
+        {/* Company Header */}
+        <div className="company-header">
+          <h1 className="company-name">{companyName}</h1>
+        </div>
+
+        {/* Company Details Card */}
+        {companyData && (
+          <div className="company-card">
+            <div className="company-card-row">
+              {companyData.address && <span>{companyData.address}</span>}
+              {companyData.phone && <span>Tel: {formatPhone(companyData.phone)}</span>}
+            </div>
+            <div className="company-card-row">
+              <span>
+                {companyData.city}
+                {companyData.city && companyData.state && " - "}
+                {companyData.state}
+                {(companyData.city || companyData.state) && companyData.cep && " - "}
+                {companyData.cep && `CEP: ${formatCep(companyData.cep)}`}
+              </span>
+              {companyData.cnpj && <span>CNPJ: {formatCnpj(companyData.cnpj)}</span>}
+            </div>
+          </div>
+        )}
+
+        {/* Print Date/Time */}
+        <div className="print-datetime">
+          <span>Impresso em: {printDateTime}</span>
+        </div>
 
         <div className="info-card">
           <div className="info-row">
@@ -22,7 +96,7 @@ export const SalePrintReceipt = React.forwardRef<HTMLDivElement, SalePrintReceip
             <span className="info-value">{clientName}</span>
           </div>
           <div className="info-row">
-            <span className="info-label">Data:</span>
+            <span className="info-label">Data da Venda:</span>
             <span className="info-value">{formatDate(sale.createdAt)}</span>
           </div>
           <div className="info-row">
@@ -91,14 +165,41 @@ export const SalePrintReceipt = React.forwardRef<HTMLDivElement, SalePrintReceip
             box-sizing: border-box;
           }
 
-          .company-name {
-            font-size: 24px;
-            font-weight: bold;
+          .company-header {
             text-align: center;
-            margin: 0 0 20px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #000;
+            margin-bottom: 10px;
+          }
+
+          .company-name {
+            font-size: 26px;
+            font-weight: bold;
+            margin: 0;
             text-transform: uppercase;
+          }
+
+          .company-card {
+            border: 1px solid #000;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            font-size: 10px;
+          }
+
+          .company-card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+          }
+
+          .company-card-row:last-child {
+            margin-bottom: 0;
+          }
+
+          .print-datetime {
+            text-align: right;
+            font-size: 10px;
+            margin-bottom: 10px;
+            color: #333;
           }
 
           .info-card {
@@ -213,7 +314,7 @@ export const SalePrintReceipt = React.forwardRef<HTMLDivElement, SalePrintReceip
         `}</style>
       </div>
     );
-  }
+  },
 );
 
 SalePrintReceipt.displayName = "SalePrintReceipt";
