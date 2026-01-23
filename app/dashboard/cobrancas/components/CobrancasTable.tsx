@@ -37,7 +37,12 @@ export default function CobrancasTable({ sales, onClick }: CobrancasTableProps) 
           <tbody>
             {sales.length > 0 ? (
               sales.map((sale, index) => (
-                <CobrancasItem key={sale.id} sale={sale} index={index} onClick={onClick} />
+                <CobrancasItem
+                  key={sale.id}
+                  sale={sale}
+                  index={index}
+                  onClick={onClick}
+                />
               ))
             ) : (
               <tr>

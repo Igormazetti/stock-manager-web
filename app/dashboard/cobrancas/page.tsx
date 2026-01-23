@@ -57,11 +57,7 @@ export default function CobrancasPage() {
               setSkip(0);
             }}
           />
-          <MagnifyingGlass
-            className="absolute right-3 top-2.5"
-            size={22}
-            color="gray"
-          />
+          <MagnifyingGlass className="absolute right-3 top-2.5" size={22} color="gray" />
         </div>
       </div>
 

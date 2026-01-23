@@ -62,9 +62,7 @@ export default function CobrancasDetailsModal({
           <div className="w-full pb-4">
             {/* Client Information */}
             <div className="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
-              <h3 className="font-semibold text-gray-800 mb-3">
-                Informações do Cliente
-              </h3>
+              <h3 className="font-semibold text-gray-800 mb-3">Informações do Cliente</h3>
               <div className="space-y-2">
                 <div>
                   <p className="text-xs text-gray-600">Nome</p>
@@ -171,9 +169,7 @@ export default function CobrancasDetailsModal({
 
             {/* Payment Section */}
             <div className="bg-green-50 p-5 rounded-lg border-2 border-green-300">
-              <h3 className="font-semibold text-gray-800 mb-4">
-                Confirmar Pagamento
-              </h3>
+              <h3 className="font-semibold text-gray-800 mb-4">Confirmar Pagamento</h3>
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">

@@ -21,7 +21,10 @@ export default function CobrancasItem({ sale, index, onClick }: CobrancasItemPro
     >
       <td className="py-3 px-4 font-medium text-gray-800">{clientName}</td>
       <td className="py-3 px-4 text-gray-600 text-sm">{clientEmail}</td>
-      <td className="py-3 px-4 text-gray-600 text-sm max-w-[200px] truncate" title={clientAddress}>
+      <td
+        className="py-3 px-4 text-gray-600 text-sm max-w-[200px] truncate"
+        title={clientAddress}
+      >
         {clientAddress}
       </td>
       <td className="py-3 px-4">
