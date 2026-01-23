@@ -46,6 +46,9 @@ export default function Menu() {
 
           <MenuButton path="sales" isOpen={isOpen} />
 
+          {/* Cobranças */}
+          <MenuButton path="cobrancas" isOpen={isOpen} />
+
           {/* Clientes */}
           <MenuButton path="clients" isOpen={isOpen} />
 

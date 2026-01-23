@@ -26,7 +26,7 @@ interface SalePrintReceiptProps {
 export const SalePrintReceipt = React.forwardRef<HTMLDivElement, SalePrintReceiptProps>(
   ({ sale, companyData, printDateTime }, ref) => {
     const clientName = sale.Client?.name || sale.client;
-    const companyName = companyData?.name || "Minha Empresa";
+    const companyName = companyData?.name;
 
     const formatPhone = (phone: string) => {
       if (!phone) return "";

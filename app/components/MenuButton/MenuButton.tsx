@@ -1,5 +1,5 @@
 import { usePathname, useRouter } from "next/navigation";
-import { Package, Money, Users } from "phosphor-react";
+import { Package, Money, Users, Receipt } from "phosphor-react";
 import { colors } from "@/app/styles/colors";
 
 interface IMenuButton {
@@ -19,6 +19,8 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
         return <Money size={32} />;
       case "clients":
         return <Users size={32} />;
+      case "cobrancas":
+        return <Receipt size={32} />;
     }
   };
 
@@ -30,6 +32,8 @@ export default function MenuButton({ path, isOpen }: IMenuButton) {
         return "Vendas";
       case "clients":
         return "Clientes";
+      case "cobrancas":
+        return "Cobranças";
     }
   };
 
